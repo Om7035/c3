@@ -26,6 +26,23 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+import openai
+from tenacity import retry, wait_exponential, stop_after_attempt
+
+sync_create = openai.resources.chat.completions.Completions.create
+async_create = openai.resources.chat.completions.AsyncCompletions.create
+
+@retry(wait=wait_exponential(multiplier=2, min=2, max=30), stop=stop_after_attempt(10))
+def _sync_create_with_retry(*args, **kwargs):
+    return sync_create(*args, **kwargs)
+
+@retry(wait=wait_exponential(multiplier=2, min=2, max=30), stop=stop_after_attempt(10))
+async def _async_create_with_retry(*args, **kwargs):
+    return await async_create(*args, **kwargs)
+
+openai.resources.chat.completions.Completions.create = _sync_create_with_retry
+openai.resources.chat.completions.AsyncCompletions.create = _async_create_with_retry
+
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from operators.config import is_live, get_backend
