@@ -1,48 +1,69 @@
-# C3
+# C³ (Cognitive Computation Compiler)
 
-C3, the Cognitive Computation Compiler, is a research prototype for compiling problems into reasoning graphs instead of forcing all tasks through one fixed pipeline.
+Current AI systems execute essentially one reasoning pipeline for every problem.
 
-## Vision
+C³ introduces a different hypothesis:
 
-Instead of hard-coding one agent loop for every problem, C3 compiles a problem specification into a declarative reasoning graph, then executes that graph through a runtime and verification layer.
+> **Every problem deserves its own synthesized computation.**
+
+Instead of forcing every task through one fixed reasoning workflow, C³ compiles each problem into a custom reasoning graph, executes that graph, verifies intermediate results, and produces an explainable answer.
+
+The research question is simple:
+
+> **Can dynamically synthesized reasoning programs outperform fixed reasoning pipelines?**
 
 ## Repository Layout
 
 ```text
 C3/
-|-- benchmarks/
-|-- compiler/
-|-- docs/
-|-- examples/
-|-- operators/
-|-- planner/
-|-- runtime/
-|-- tests/
+|-- analyzer/       # Problem Analyzer
+|-- planner/        # Reasoning Planner
+|-- compiler/       # Reasoning Compiler
+|-- rir/            # Reasoning Intermediate Representation (RIR)
+|-- runtime/        # Reasoning Runtime
+|-- operators/      # Primitive Operator Library (Knowledge, Reasoning, Execution, Verification)
+|-- verification/   # Verification Layer
+|-- visualization/  # Graph Visualization (Mermaid/JSON)
+|-- benchmarks/     # Benchmark runner
+|-- cli/            # Command Line Interface
+|-- tests/          # Test suite
 |-- CONTRIBUTING.md
-|-- C3_SPEC.md
-|-- Dockerfile
-|-- LICENSE
+|-- C3_SPEC.md      # Core Specification and RIR v1 Design
 |-- ROADMAP.md
+|-- LICENSE
 `-- README.md
 ```
 
-## Current Scope
+## Architecture Flow
 
-This repository currently provides:
+C³ operates on a strict pipeline analogous to LLVM for reasoning:
 
-- repository structure and engineering documentation
-- an initial intermediate representation specification
-- interface contracts for compiler, runtime, operators, and verification
-- development tooling for formatting, linting, typing, testing, and CI
-
-## Phase Plan
-
-- Phase 1: repository, docs, interfaces, IR, roadmap
-- Phase 2: compiler skeleton
-- Phase 3: runtime skeleton
-- Phase 4: operator implementations
-- Phase 5: evaluation framework
+```
+Question
+  ↓
+Problem Analyzer
+  ↓
+Reasoning Planner
+  ↓
+Reasoning Strategy
+  ↓
+Compiler
+  ↓
+Reasoning Intermediate Representation (RIR)
+  ↓
+Optimizer
+  ↓
+Reasoning Runtime
+  ↓
+Primitive Library
+  ↓
+Verification
+  ↓
+Execution Report
+  ↓
+Answer
+```
 
 ## Milestones
 
-See [ROADMAP.md](E:\C³\ROADMAP.md) and [C3_SPEC.md](E:\C³\C3_SPEC.md) for the guiding plan and system contract.
+See [ROADMAP.md](ROADMAP.md) and [C3_SPEC.md](C3_SPEC.md) for the guiding plan and system contract.

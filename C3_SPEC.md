@@ -1,77 +1,113 @@
-# C3 Specification
+# C³ Specification
 
 ## Purpose
 
-C³ is a reasoning compiler. It accepts a problem specification, compiles that problem into a declarative reasoning graph, and executes the graph through a runtime that records evidence, intermediate state, and verification results.
+C³ is a reasoning compiler. It accepts a problem specification, plans a reasoning strategy, compiles that strategy into a declarative reasoning graph (RIR), optimizes it, and executes it through a runtime that records evidence, intermediate state, and verification results.
+
+The core hypothesis is that **dynamically synthesized reasoning programs outperform fixed reasoning pipelines.**
 
 ## Core Design Rules
 
-1. The compiler emits an intermediate representation, not imperative Python code.
-2. Operators are independent execution units behind a stable async interface.
+1. The compiler emits an intermediate representation (RIR), not imperative Python code.
+2. Operators are independent execution primitives behind a stable async interface.
 3. The runtime owns scheduling, state flow, observability, and failure handling.
 4. Verification is a first-class phase, not an afterthought.
 5. Components may evolve internally as long as they preserve interface contracts.
 
-## Architectural Components
+## Architectural Flow
 
-- Problem Specification Engine
-- Epistemic Classifier
-- Reasoning Compiler
-- Execution Runtime
-- Verification Engine
-- Response Generator
-
-## Intermediate Representation
-
-The core IR is a reasoning graph.
-
-```yaml
-problem_type: factual_lookup
-operators:
-  - id: retrieve_1
-    kind: retrieve
-  - id: verify_1
-    kind: verify
-  - id: answer_1
-    kind: reason
-edges:
-  - from: retrieve_1
-    to: verify_1
-  - from: verify_1
-    to: answer_1
+```
+Question
+  ↓
+Problem Analyzer (Replaces Epistemic Classifier)
+  ↓
+Reasoning Planner
+  ↓
+Reasoning Strategy (Defines execution and validation constraints)
+  ↓
+Compiler
+  ↓
+Reasoning Intermediate Representation (RIR)
+  ↓
+Optimizer (e.g. Graph Optimization, redundant node removal)
+  ↓
+Reasoning Runtime
+  ↓
+Primitive Library
+  ↓
+Verification
+  ↓
+Execution Report
+  ↓
+Answer
 ```
 
-## Interface Contracts
+## Primitive Instruction Set Architecture (ISA)
 
-### Operator
+Operators in C³ are structured as primitives with specific capabilities:
 
-Each operator must implement:
+1. **Knowledge Primitives**: `Retrieve`, `Search`, `Memory`
+2. **Reasoning Primitives**: `Infer`, `Summarize`, `Compare`, `Critique`
+3. **Execution Primitives**: `Python`, `Shell`, `API`
+4. **Verification Primitives**: `Verify`, `Vote`, `Confidence`
 
-- a stable `kind`
-- an async `execute(context)` method
-- explicit structured output
+Each primitive implements a standard async interface and returns strongly-typed results, confidence scores, and execution metadata.
 
-### Compiler
+## Reasoning Intermediate Representation (RIR) v1
 
-Each compiler must implement:
+The RIR is the heart of the project (similar to LLVM IR). It defines exactly how a problem will be executed, verified, and traced.
 
-- `compile(problem)` returning a reasoning graph
+```yaml
+version: "1.0"
 
-### Runtime
+problem:
+  id: "uuid"
+  category: "analytical_reasoning"
+  objective: "Determine the exact capacity of Wembley Stadium."
 
-Each runtime must implement:
+strategy:
+  approach: "research_then_calculate"
+  verification_level: "high"
+  parallel_retrieval: true
+  evidence_required: "external_sources"
 
-- `execute(graph, context)` returning a structured execution result
+execution:
+  parallel: true
+  timeout_ms: 30000
+  max_retries: 3
+  fail_fast: false
 
-## Non-Goals for V1
+nodes:
+  - id: "node_1_retrieve"
+    primitive_type: "Knowledge"
+    operator: "Search"
+    inputs:
+      query: "Wembley Stadium official capacity"
+    outputs: ["search_results"]
+    expected_latency_ms: 2000
+    expected_cost: 0.001
 
-- a general-purpose agent framework
-- complex autonomous planning without observability
-- large operator libraries before strong operator quality
+  - id: "node_2_verify"
+    primitive_type: "Verification"
+    operator: "CrossCheck"
+    inputs:
+      data: "$node_1_retrieve.search_results"
+    outputs: ["verified_facts"]
+    confidence_threshold: 0.9
+
+edges:
+  - source: "node_1_retrieve"
+    target: "node_2_verify"
+
+observability:
+  trace_enabled: true
+  log_level: "DEBUG"
+  export_visuals: ["mermaid", "json"]
+```
 
 ## Success Criteria
 
-- compile different problem classes into different graphs
-- execute graphs deterministically in a testable runtime
-- verify intermediate claims and final outputs
-- measure the value of adaptive compilation against fixed pipelines
+- Compile different problem classes into different graphs
+- Execute graphs deterministically in a testable reasoning runtime
+- Verify intermediate claims and final outputs
+- Measure the value of adaptive compilation against fixed pipelines
