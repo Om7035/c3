@@ -1,90 +1,151 @@
 <div align="center">
-  <img src="docs/assets/c3_architecture.png" alt="C3 Architecture" width="800"/>
+
+# ⚡ C³: Cognitive Computation Compiler
+
+**Typed, Verifiable, Per-Query Reasoning Programs with Full Provenance.**
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
+[![Status: Research](https://img.shields.io/badge/Status-Research_Prototype-blue.svg)]()
+[![Model Support](https://img.shields.io/badge/Supported_Models-Groq_%7C_OpenAI_%7C_Gemini-purple.svg)]()
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)]()
+
+<p align="center">
+  <a href="#-the-core-hypothesis">Hypothesis</a> •
+  <a href="#-architecture">Architecture</a> •
+  <a href="#-quickstart">Quickstart</a> •
+  <a href="#-benchmarks">Benchmarks</a> •
+  <a href="#-documentation">Documentation</a>
+</p>
+
 </div>
-
-# C³: Cognitive Computation Compiler
-
-<div align="center">
-  <em>Typed, Verifiable, Per-Query Reasoning Programs with Full Provenance.</em>
-</div>
-
-<br/>
-
-[![Status](https://img.shields.io/badge/Status-Research_Prototype-blue.svg)]()
-[![License](https://img.shields.io/badge/License-MIT-green.svg)]()
-[![Model](https://img.shields.io/badge/Supported_Models-Groq_%7C_OpenAI_%7C_Gemini-purple.svg)]()
-
-## 🧠 The Problem: Fixed Workflows Don't Generalize
-
-Current AI systems execute essentially one static reasoning pipeline for every problem. Whether you use a prompt-and-generate loop, a Retrieval-Augmented Generation (RAG) system, or a fixed ReAct agent workflow, the structure of the computation remains identical regardless of the task's actual requirements.
-
-Recent approaches (ADAS, AFlow) try to optimize this by searching for better workflows offline—but they still deploy a **frozen** pipeline per task. 
-
-C³ operates on a different hypothesis: **Every problem deserves its own synthesized computation.** 
-
-Instead of routing every query through a fixed inference pipeline, C³ acts as a compiler for Large Language Models. It dynamically synthesizes a strictly typed **Reasoning Intermediate Representation (RIR)** tailored to the specific query, ensuring that every reasoning trace is verifiable and auditable.
-
-## 🚀 Key Differentiators
-
-Why use C³ instead of just writing a Python script with an LLM call?
-
-1. **Per-Query Synthesis:** We don't use fixed workflows. The LLM Planner synthesizes a custom Abstract Syntax Tree (AST) for *each individual query*.
-2. **Typed & Verifiable (RIR):** The AST is lowered into a register-based Directed Acyclic Graph (DAG). Types are enforced. Execution is deterministic.
-3. **First-Class Verification:** Claims are gated by a `VERI.VERIFY` primitive. We don't trust self-reported confidence from a generation node; we mathematically prove trust through retrieved evidence.
-4. **Full Provenance (RPS):** The primary output isn't just an "answer"—it's a Reasoning Provenance Specification (RPS). You get a complete, auditable trace of the knowledge flow, intermediate states, and calibrated confidence at every node.
-
-## 🏗️ Architecture
-
-C³ follows a strict pipeline analogous to LLVM, designed for natural language reasoning:
-
-1. **LLM Planner (Front-End):** A constrained LLM strictly outputs a JSON-schema `ReasoningStrategy` AST.
-2. **Compiler (Middle-End):** Lowers the AST into the **Reasoning Intermediate Representation (RIR)**.
-3. **Pass Manager (Optimization):** Fuses redundant steps, prunes dead execution paths, and optimizes the graph before execution.
-4. **Reasoning Runtime (Back-End):** A virtual machine that executes the RIR graph, handling dependencies, timeouts, and register state across our **Primitive ISA** (`KNOW.RETRIEVE`, `EXEC.PYTHON`, `VERI.VERIFY`, `REAS.INFER`).
-
-## ⚡ Quick Start (Live API & Web Observatory)
-
-C³ comes with a live Web Observatory UI to visualize the dynamic compilation and execution of reasoning programs in real-time.
-
-```bash
-# 1. Install dependencies
-pip install fastapi uvicorn httpx pydantic networkx openai python-dotenv tenacity
-
-# 2. Configure your environment (.env)
-# We highly recommend Groq for fast, free inference
-OPENAI_API_KEY="gsk_your_groq_key"
-OPENAI_BASE_URL="https://api.groq.com/openai/v1"
-C3_LLM_MODEL="llama-3.1-70b-versatile"
-TAVILY_API_KEY="tvly-your_tavily_key" # Optional for search
-C3_BACKEND="live"
-
-# 3. Start the API server
-uvicorn api.server:app --port 8000
-
-# 4. Open the UI in your browser
-start ui/index.html
-```
-
-## 📊 Scientific Validation & Benchmarks
-
-C³ is built for rigorous evaluation on the **Cost-Accuracy Pareto Frontier**. We provide an ablation harness that pits C³ against a Vanilla Tool-Enabled LLM and a Fixed ReAct loop. 
-
-To run the ablation suite over our diverse benchmark dataset (GSM8K, HotpotQA, BBH):
-
-```bash
-python benchmarks/ablation.py
-```
-
-*This script produces a Pareto metrics table analyzing Empirical Accuracy, Token Cost ($), Latency (ms), and Verification Rate.*
-
-## 🔮 The Future: Learning Compiler
-
-The complete Reasoning Provenance Specification (RPS) generated from every run serves as training data. The next stage of C³ is the **Learning Compiler**, an LLM-guided planner that uses historical RPS execution logs to empirically improve its own synthesis logic.
 
 ---
 
-### 📖 Documentation
-- **[Formal Semantics & Research Paper](paper/paper.md)**
-- **[C³ Specification & RIR Design](docs/C3_SPEC.md)**
-- **[Primitive Instruction Set Architecture (ISA)](docs/PRIMITIVE_ISA.md)**
-- **[Reasoning Provenance Specification (RPS)](docs/RPS_SPEC.md)**
+## 🔬 The Core Hypothesis
+
+Current AI architectures (RAG, ReAct, custom LangChain/CrewAI flows) deploy **fixed reasoning workflows**. Whether relying on heuristic search (ADAS, AFlow) or fixed agent loops, the computational structure remains static for every problem.
+
+**C³ operates on a fundamentally different paradigm:**
+> Every problem deserves its own dynamically synthesized, typed computation.
+
+Instead of routing natural language through a static inference pipeline, C³ acts as a compiler for Large Language Models. It lowers natural language into a **Reasoning Intermediate Representation (RIR)**—a strictly typed, register-based Directed Acyclic Graph (DAG)—which is optimized and executed by a deterministic virtual machine. 
+
+The output is not just an answer, but a **Reasoning Provenance Specification (RPS)**: a fully auditable trace of every logical step, retrieval, execution, and validation.
+
+---
+
+## 🧩 Architecture
+
+C³ is heavily inspired by classical compiler design (like LLVM), strictly separating planning (Front-End) from execution (Back-End).
+
+```mermaid
+graph TD
+    %% Styling
+    classDef user fill:#f9f9f9,stroke:#333,stroke-width:2px;
+    classDef llm fill:#e1f5fe,stroke:#03a9f4,stroke-width:2px;
+    classDef core fill:#e8f5e9,stroke:#4caf50,stroke-width:2px;
+    classDef vm fill:#fce4ec,stroke:#e91e63,stroke-width:2px;
+    classDef data fill:#fff3e0,stroke:#ff9800,stroke-width:2px;
+    
+    Q["Query (Natural Language)"]:::user --> P["LLM Planner (Front-End)"]:::llm
+    
+    subgraph Compiler [C³ Compiler Pipeline]
+        P -->|Synthesizes| AST["Reasoning Strategy (JSON AST)"]:::core
+        AST --> V["Type Verification & Lowering"]:::core
+        V --> RIR["Reasoning IR (Typed DAG)"]:::core
+        RIR --> OPT["Pass Manager (Optimizer)"]:::core
+    end
+    
+    OPT --> RT["Reasoning Runtime (Back-End)"]:::vm
+    
+    subgraph Execution [Runtime Virtual Machine]
+        RT --> PR["Primitives ISA"]:::vm
+        PR -->|KNOW.RETRIEVE| Search["Web/DB Search"]:::data
+        PR -->|EXEC.PYTHON| Sandbox["Isolated Sandbox"]:::data
+        PR -->|VERI.VERIFY| Logic["Formal Validator"]:::data
+    end
+    
+    RT --> RPS["Reasoning Provenance Specification (RPS)"]:::data
+    RPS --> A["Calibrated Final Answer"]:::user
+```
+
+### Why Types Matter in Reasoning
+By enforcing strict typing via RIR, C³ unlocks capabilities impossible in standard agent frameworks:
+1. **Safety:** Invalid execution plans are rejected mathematically *before* running.
+2. **Optimization:** Pass managers can execute dead-node elimination, verification fusion, and register lifetime analysis.
+3. **Auditable Provenance:** Every claim is gated by the `VERI.VERIFY` primitive, shifting the system from "self-reported confidence" to cryptographic-style trust.
+
+---
+
+## 🚀 Quickstart
+
+Experience the dynamic compilation of reasoning programs in real-time through the Web Observatory UI.
+
+### 1. Installation
+
+```bash
+git clone https://github.com/yourusername/C3.git
+cd C3
+pip install fastapi uvicorn httpx pydantic networkx openai python-dotenv tenacity
+```
+
+### 2. Configuration
+
+Create a `.env` file in the project root. We recommend **Groq** for lightning-fast, free inference, but OpenAI or Gemini will also work.
+
+```env
+# Example using Groq (Recommended for speed and generous free tiers)
+OPENAI_API_KEY="gsk_your_groq_api_key_here"
+OPENAI_BASE_URL="https://api.groq.com/openai/v1"
+C3_LLM_MODEL="llama-3.1-70b-versatile"
+
+# Optional: For optimized web search primitives
+TAVILY_API_KEY="tvly-your_tavily_key"
+
+# Required flag
+C3_BACKEND="live"
+```
+
+### 3. Run the Observatory
+
+```bash
+# Start the API server
+uvicorn api.server:app --port 8000
+
+# Open the UI
+start ui/index.html   # On Windows
+open ui/index.html    # On Mac
+```
+
+---
+
+## 📊 Benchmarks & Ablation
+
+To prove the scientific hypothesis, C³ evaluates against the **Cost-Accuracy Pareto Frontier**. The framework includes an ablation suite testing three modes across heterogeneous datasets (GSM8K, HotpotQA, BBH):
+
+1. **Vanilla LLM + Tools:** A standard frontier model given raw tool access.
+2. **Fixed ReAct:** A static `Retrieve -> Python -> Verify -> Infer` loop.
+3. **Full C³:** Per-query synthesized IR with full runtime optimization.
+
+**Run the ablation study yourself:**
+```bash
+python benchmarks/ablation.py
+```
+*Outputs a full Pareto matrix comparing Token Cost, Latency, Accuracy, and Verification Rate.*
+
+---
+
+## 📚 Documentation
+
+Dive deeper into the theory and specification of C³:
+
+- 📄 **[Research Paper: Formal Semantics](paper/paper.md)**
+- ⚙️ **[C³ Specification & RIR Design](docs/C3_SPEC.md)**
+- 🛠️ **[Primitive Instruction Set Architecture (ISA)](docs/PRIMITIVE_ISA.md)**
+- 🔍 **[Reasoning Provenance Specification (RPS)](docs/RPS_SPEC.md)**
+
+---
+
+<div align="center">
+  <i>Built for the future of verifiable artificial intelligence.</i>
+</div>
