@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>C³ Architecture (Animated)</title>
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
+    <style>
+        body { font-family: sans-serif; display: flex; justify-content: center; padding: 50px; background: #f4f4f9; }
+        .mermaid { background: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+        
+        /* CSS Animations for Mermaid Nodes and Links */
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.8; box-shadow: 0 0 15px rgba(33, 150, 243, 0.5); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        @keyframes dash {
+            to {
+                stroke-dashoffset: -20;
+            }
+        }
+        
+        /* Apply animations to specific node classes */
+        .node.llm rect { animation: pulse 2s infinite ease-in-out; fill: #e1f5fe !important; stroke: #03a9f4 !important; }
+        .node.core rect { fill: #e8f5e9 !important; stroke: #4caf50 !important; }
+        .node.vm rect { fill: #fce4ec !important; stroke: #e91e63 !important; }
+        .node.data rect { fill: #fff3e0 !important; stroke: #ff9800 !important; }
+        
+        /* Animate the edge paths to simulate data flow */
+        .edgePath .path {
+            stroke-dasharray: 5, 5;
+            animation: dash 1s linear infinite;
+            stroke-width: 2px !important;
+            stroke: #2196f3 !important;
+        }
+    </style>
+</head>
+<body>
+
+<div class="mermaid">
+graph TD
+    Q["Query (Natural Language)"]:::user --> P["LLM Planner (Front-End)"]:::llm
+    
+    subgraph Compiler [C³ Compiler Pipeline]
+        P -->|Synthesizes| AST["Reasoning Strategy (JSON AST)"]:::core
+        AST --> V["Type Verification & Lowering"]:::core
+        V --> RIR["Reasoning IR (Typed DAG)"]:::core
+        RIR --> OPT["Pass Manager (Optimizer)"]:::core
+    end
+    
+    OPT --> RT["Reasoning Runtime (Back-End)"]:::vm
+    
+    subgraph Execution [Runtime Virtual Machine]
+        RT --> PR["Primitives ISA"]:::vm
+        PR -->|KNOW.RETRIEVE| Search["Web/DB Search"]:::data
+        PR -->|EXEC.PYTHON| Sandbox["Isolated Sandbox"]:::data
+        PR -->|VERI.VERIFY| Logic["Formal Validator"]:::data
+    end
+    
+    RT --> RPS["Reasoning Provenance Specification (RPS)"]:::data
+    RPS --> A["Calibrated Final Answer"]:::user
+
+    classDef user fill:#f9f9f9,stroke:#333,stroke-width:2px
+    classDef llm fill:#e1f5fe,stroke:#03a9f4,stroke-width:2px
+    classDef core fill:#e8f5e9,stroke:#4caf50,stroke-width:2px
+    classDef vm fill:#fce4ec,stroke:#e91e63,stroke-width:2px
+    classDef data fill:#fff3e0,stroke:#ff9800,stroke-width:2px
+</div>
+
+</body>
+</html>
