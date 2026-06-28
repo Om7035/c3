@@ -39,7 +39,7 @@ The output is not just an answer, but a **Reasoning Provenance Specification (RP
 C³ is heavily inspired by classical compiler design (like LLVM), strictly separating planning (Front-End) from execution (Back-End).
 
 <div align="center">
-  <img src="docs/assets/c3_beautiful_architecture.svg" alt="C3 Compiler Architecture" width="900"/>
+  <img src="https://raw.githubusercontent.com/Om7035/c3/main/docs/assets/c3_beautiful_architecture.svg" alt="C3 Compiler Architecture" width="900"/>
 </div>
 
 ### Why Types Matter in Reasoning
