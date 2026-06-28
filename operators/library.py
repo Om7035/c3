@@ -19,7 +19,7 @@ def _get_live_registry() -> dict[str, Operator]:
     from operators.live.verification import LiveVerifyOperator
 
     # Memory operator has no live equivalent — use mock (no external call needed)
-    from operators.library import MemoryOperator
+    from operators.mock_library import MemoryOperator
 
     return {
         "KNOW.RETRIEVE": LiveRetrieveOperator(),
