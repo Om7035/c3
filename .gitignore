@@ -7,3 +7,8 @@ __pycache__/
 dist/
 build/
 *.pyc
+
+.env
+ablation_results.json
+*.jsonl
+.agents/

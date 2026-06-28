@@ -43,9 +43,9 @@ Question
   ↓
 Problem Analyzer
   ↓
-Reasoning Planner
+Strategy Builder
   ↓
-Reasoning Strategy
+Reasoning Strategy (AST)
   ↓
 Compiler
   ↓
@@ -59,7 +59,7 @@ Primitive Library
   ↓
 Verification
   ↓
-Execution Report
+Reasoning Provenance Specification (RPS)
   ↓
 Answer
 ```

@@ -8,10 +8,10 @@ from pydantic import BaseModel, Field
 
 class GraphNode(BaseModel):
     id: str
-    operator: str
-    inputs: list[str] = Field(default_factory=list)
+    opcode: str
+    operands: dict[str, Any] = Field(default_factory=dict)
     outputs: list[str] = Field(default_factory=list)
-    params: dict[str, Any] = Field(default_factory=dict)
+    metadata: dict[str, Any] = Field(default_factory=dict)
 
 
 class GraphEdge(BaseModel):
@@ -20,8 +20,21 @@ class GraphEdge(BaseModel):
 
 
 class ReasoningGraph(BaseModel):
-    graph_id: str = Field(default_factory=lambda: str(uuid.uuid4()))
-    problem_type: str = "unknown"
+    header: dict[str, Any] = Field(
+        default_factory=lambda: {
+            "version": "1.0",
+            "rir_id": str(uuid.uuid4()),
+            "objective": "unknown"
+        }
+    )
+    strategy: dict[str, Any] = Field(default_factory=dict)
+    registers: list[str] = Field(default_factory=list)
     nodes: list[GraphNode] = Field(default_factory=list)
     edges: list[GraphEdge] = Field(default_factory=list)
-    metadata: dict[str, Any] = Field(default_factory=dict)
+    observability: dict[str, Any] = Field(
+        default_factory=lambda: {
+            "trace_enabled": True,
+            "log_level": "DEBUG",
+            "export_visuals": ["mermaid", "ets"]
+        }
+    )

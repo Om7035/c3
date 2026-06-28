@@ -11,6 +11,9 @@ class ProblemType(str, Enum):
     DESIGN_SYNTHESIS = "design_synthesis"
     ANALYTICAL_REASONING = "analytical_reasoning"
     RESEARCH = "research"
+    DESIGN_PLANNING = "design_planning"
+    CRITICAL_EVALUATION = "critical_evaluation"
+    INTERPRETIVE_REASONING = "interpretive_reasoning"
     UNKNOWN = "unknown"
 
 

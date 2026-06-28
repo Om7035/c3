@@ -1,0 +1,17 @@
+[
+  {"id": "TQA-01", "query": "What is the population of Tokyo?", "answer": "13960000", "answer_aliases": ["13.96 million", "13,960,000", "approximately 14 million", "about 14 million"], "type": "exact"},
+  {"id": "TQA-02", "query": "In what year did World War II end?", "answer": "1945", "answer_aliases": ["1945"], "type": "exact"},
+  {"id": "TQA-03", "query": "What is the capital of Australia?", "answer": "Canberra", "answer_aliases": ["canberra"], "type": "exact"},
+  {"id": "TQA-04", "query": "Who wrote the play Hamlet?", "answer": "William Shakespeare", "answer_aliases": ["shakespeare", "william shakespeare"], "type": "exact"},
+  {"id": "TQA-05", "query": "What is the chemical symbol for gold?", "answer": "Au", "answer_aliases": ["au"], "type": "exact"},
+  {"id": "TQA-06", "query": "How many bones are in the adult human body?", "answer": "206", "answer_aliases": ["206"], "type": "exact"},
+  {"id": "TQA-07", "query": "What is the speed of light in meters per second?", "answer": "299792458", "answer_aliases": ["299,792,458", "approximately 3 times 10^8", "3 x 10^8"], "type": "exact"},
+  {"id": "TQA-08", "query": "What is the largest planet in our solar system?", "answer": "Jupiter", "answer_aliases": ["jupiter"], "type": "exact"},
+  {"id": "TQA-09", "query": "In what country was Albert Einstein born?", "answer": "Germany", "answer_aliases": ["germany", "the german empire"], "type": "exact"},
+  {"id": "TQA-10", "query": "What is the boiling point of water in Celsius?", "answer": "100", "answer_aliases": ["100 degrees", "100°C", "100 celsius"], "type": "exact"},
+  {"id": "TQA-11", "query": "What is the currency of Japan?", "answer": "Yen", "answer_aliases": ["japanese yen", "yen", "jpy"], "type": "exact"},
+  {"id": "TQA-12", "query": "How many days are in a leap year?", "answer": "366", "answer_aliases": ["366 days"], "type": "exact"},
+  {"id": "TQA-13", "query": "What is the tallest mountain in the world?", "answer": "Mount Everest", "answer_aliases": ["everest", "mount everest"], "type": "exact"},
+  {"id": "TQA-14", "query": "Which planet is known as the Red Planet?", "answer": "Mars", "answer_aliases": ["mars"], "type": "exact"},
+  {"id": "TQA-15", "query": "What is the smallest country in the world by area?", "answer": "Vatican City", "answer_aliases": ["vatican", "vatican city", "the vatican"], "type": "exact"}
+]

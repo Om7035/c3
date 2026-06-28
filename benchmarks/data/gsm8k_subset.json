@@ -1,0 +1,12 @@
+[
+  {"id": "GSM-01", "query": "Janet has 12 apples. She gives away 1/3 of them and then buys 5 more. How many apples does she have?", "answer": "13", "type": "numeric"},
+  {"id": "GSM-02", "query": "A train travels at 60 mph. How many hours does it take to travel 270 miles?", "answer": "4.5", "answer_aliases": ["4.5 hours", "4 and a half hours", "4.5h"], "type": "numeric"},
+  {"id": "GSM-03", "query": "What is 15% of 240?", "answer": "36", "type": "numeric"},
+  {"id": "GSM-04", "query": "A rectangle has a length of 12 cm and a width of 7 cm. What is its area in square centimeters?", "answer": "84", "type": "numeric"},
+  {"id": "GSM-05", "query": "If a car depreciates by 20% per year from an initial value of $25,000, what is its value after 2 years?", "answer": "16000", "answer_aliases": ["$16,000", "16000 dollars", "16,000"], "type": "numeric"},
+  {"id": "GSM-06", "query": "Compute the definite integral of x squared from 0 to 3.", "answer": "9", "type": "numeric"},
+  {"id": "GSM-07", "query": "A store sells 3 items: a book for $12.50, a pen for $3.25, and a notebook for $6.75. What is the total cost with 8% tax?", "answer": "24.3", "answer_aliases": ["$24.30", "24.30"], "type": "numeric"},
+  {"id": "GSM-08", "query": "What is the sum of the first 10 positive integers?", "answer": "55", "type": "numeric"},
+  {"id": "GSM-09", "query": "If 5x + 3 = 28, what is x?", "answer": "5", "type": "numeric"},
+  {"id": "GSM-10", "query": "A circle has a radius of 7 cm. What is its circumference rounded to 2 decimal places? Use pi = 3.14159.", "answer": "43.98", "answer_aliases": ["43.98 cm", "approximately 43.98"], "type": "numeric"}
+]

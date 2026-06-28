@@ -1,0 +1,32 @@
+[
+  {
+    "id": "BM-01",
+    "query": "What is the population of Tokyo?",
+    "expected_problem_class": "factual_lookup",
+    "description": "Simple factual lookup requiring external knowledge retrieval and verification."
+  },
+  {
+    "id": "BM-02",
+    "query": "Solve the integral: compute the area under x-squared from 0 to 3",
+    "expected_problem_class": "analytical_reasoning",
+    "description": "Mathematical computation requiring symbolic or numeric execution and verification."
+  },
+  {
+    "id": "BM-03",
+    "query": "Design a distributed cache system for 1 million requests per second",
+    "expected_problem_class": "design_planning",
+    "description": "System design requiring synthesis of empirical knowledge and architectural reasoning."
+  },
+  {
+    "id": "BM-04",
+    "query": "Critique this business plan: a subscription app for daily motivational quotes",
+    "expected_problem_class": "critical_evaluation",
+    "description": "Evaluation task requiring context retrieval, comparison, and deductive judgment."
+  },
+  {
+    "id": "BM-05",
+    "query": "Explain Hamlet's motivations throughout the play",
+    "expected_problem_class": "interpretive_reasoning",
+    "description": "Interpretive task requiring contextual knowledge and meaning-making reasoning."
+  }
+]

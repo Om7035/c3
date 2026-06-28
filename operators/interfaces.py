@@ -3,15 +3,16 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import Any
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from core.context import ExecutionContext
 
 
 class OperatorResult(BaseModel):
-    data: dict[str, Any]
     success: bool
+    data: dict[str, Any] = Field(default_factory=dict)
     error: str | None = None
+    confidence: float = 1.0
 
 
 class Operator(ABC):

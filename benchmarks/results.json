@@ -1,0 +1,812 @@
+{
+  "results": [
+    {
+      "id": "BM-01",
+      "query": "What is the population of Tokyo?",
+      "expected_class": "factual_lookup",
+      "actual_class": "factual_lookup",
+      "class_match": true,
+      "strategy": {
+        "objective": "What is the population of Tokyo?",
+        "problem_class": "factual_lookup",
+        "execution_profile": {
+          "confidence_target": 0.95,
+          "parallelism_allowed": true,
+          "fail_fast": false
+        },
+        "knowledge_requirements": [
+          "empirical_data"
+        ],
+        "reasoning_requirements": [
+          "summarization"
+        ],
+        "verification_requirements": "required",
+        "cost_estimate": {
+          "estimated_latency_ms": 2500,
+          "estimated_token_cost": 0.0055,
+          "estimated_node_count": 3,
+          "confidence_projection": 0.95,
+          "feasibility": "within_budget"
+        }
+      },
+      "cost_estimate": {
+        "estimated_latency_ms": 2500,
+        "estimated_token_cost": 0.0055,
+        "estimated_node_count": 3,
+        "confidence_projection": 0.95,
+        "feasibility": "within_budget"
+      },
+      "optimizer_diagnostics": [
+        "[VerificationFusion] no change",
+        "[DeadNodeElimination] no change"
+      ],
+      "node_count_after_optimization": 3,
+      "metrics": {
+        "node_count": 3,
+        "edge_count": 2,
+        "register_count": 4,
+        "graph_depth": 3,
+        "graph_width": 1,
+        "opcode_distribution": {
+          "KNOW.RETRIEVE": 1,
+          "VERI.VERIFY": 1,
+          "REAS.SUMMARIZE": 1
+        },
+        "verification_density": 0.333,
+        "know_ratio": 0.333,
+        "exec_ratio": 0.0,
+        "reas_ratio": 0.333,
+        "veri_ratio": 0.333,
+        "benchmark_id": "BM-01"
+      },
+      "rps": {
+        "version": "1.0",
+        "graph_id": "80db21e2-4464-4fa5-b122-56ae33c76220",
+        "execution": {
+          "start_time": "2026-06-28T15:41:54.764432+00:00",
+          "end_time": "2026-06-28T15:41:54.765432+00:00",
+          "total_latency_ms": 1,
+          "success": true
+        },
+        "registers_final_state": {
+          "reg_out_0_retrieve": {
+            "documents": [
+              "Mock Document 1",
+              "Mock Document 2"
+            ]
+          },
+          "reg_out_1_verify": {
+            "verified": true,
+            "details": "Verified input: {'input_data': {'documents': ['Mock Document 1', 'Mock Document 2']}}"
+          },
+          "reg_out_2_summarize": {
+            "summary": "Mock summary of: {'input_data': {'verified': True, 'details': \"Verified input: {'input_data': {'documents': ['Mock Document 1', 'Mock Document 2']}}\"}}"
+          }
+        },
+        "provenance_events": [
+          {
+            "node_id": "node_0_retrieve_5539",
+            "opcode": "KNOW.RETRIEVE",
+            "start_time": "2026-06-28T15:41:54.765432+00:00",
+            "end_time": "2026-06-28T15:41:54.765432+00:00",
+            "latency_ms": 0,
+            "registers_read": {
+              "query": "What is the population of Tokyo?"
+            },
+            "registers_written": {
+              "reg_out_0_retrieve": {
+                "documents": [
+                  "Mock Document 1",
+                  "Mock Document 2"
+                ]
+              }
+            },
+            "confidence": 1.0,
+            "error": null
+          },
+          {
+            "node_id": "node_1_verify_aaab",
+            "opcode": "VERI.VERIFY",
+            "start_time": "2026-06-28T15:41:54.765432+00:00",
+            "end_time": "2026-06-28T15:41:54.765432+00:00",
+            "latency_ms": 0,
+            "registers_read": {
+              "input_data": {
+                "documents": [
+                  "Mock Document 1",
+                  "Mock Document 2"
+                ]
+              }
+            },
+            "registers_written": {
+              "reg_out_1_verify": {
+                "verified": true,
+                "details": "Verified input: {'input_data': {'documents': ['Mock Document 1', 'Mock Document 2']}}"
+              }
+            },
+            "confidence": 0.95,
+            "error": null
+          },
+          {
+            "node_id": "node_2_summarize_435e",
+            "opcode": "REAS.SUMMARIZE",
+            "start_time": "2026-06-28T15:41:54.765432+00:00",
+            "end_time": "2026-06-28T15:41:54.765432+00:00",
+            "latency_ms": 0,
+            "registers_read": {
+              "input_data": {
+                "verified": true,
+                "details": "Verified input: {'input_data': {'documents': ['Mock Document 1', 'Mock Document 2']}}"
+              }
+            },
+            "registers_written": {
+              "reg_out_2_summarize": {
+                "summary": "Mock summary of: {'input_data': {'verified': True, 'details': \"Verified input: {'input_data': {'documents': ['Mock Document 1', 'Mock Document 2']}}\"}}"
+              }
+            },
+            "confidence": 1.0,
+            "error": null
+          }
+        ]
+      },
+      "problem_class": "factual_lookup"
+    },
+    {
+      "id": "BM-02",
+      "query": "Solve the integral: compute the area under x-squared from 0 to 3",
+      "expected_class": "analytical_reasoning",
+      "actual_class": "analytical_reasoning",
+      "class_match": true,
+      "strategy": {
+        "objective": "Solve the integral: compute the area under x-squared from 0 to 3",
+        "problem_class": "analytical_reasoning",
+        "execution_profile": {
+          "confidence_target": 0.95,
+          "parallelism_allowed": true,
+          "fail_fast": false
+        },
+        "knowledge_requirements": [],
+        "reasoning_requirements": [
+          "computation",
+          "deduction"
+        ],
+        "verification_requirements": "required",
+        "cost_estimate": {
+          "estimated_latency_ms": 2300,
+          "estimated_token_cost": 0.0055,
+          "estimated_node_count": 3,
+          "confidence_projection": 0.95,
+          "feasibility": "within_budget"
+        }
+      },
+      "cost_estimate": {
+        "estimated_latency_ms": 2300,
+        "estimated_token_cost": 0.0055,
+        "estimated_node_count": 3,
+        "confidence_projection": 0.95,
+        "feasibility": "within_budget"
+      },
+      "optimizer_diagnostics": [
+        "[VerificationFusion] no change",
+        "[DeadNodeElimination] no change"
+      ],
+      "node_count_after_optimization": 3,
+      "metrics": {
+        "node_count": 3,
+        "edge_count": 2,
+        "register_count": 4,
+        "graph_depth": 3,
+        "graph_width": 1,
+        "opcode_distribution": {
+          "EXEC.PYTHON": 1,
+          "VERI.VERIFY": 1,
+          "REAS.INFER": 1
+        },
+        "verification_density": 0.333,
+        "know_ratio": 0.0,
+        "exec_ratio": 0.333,
+        "reas_ratio": 0.333,
+        "veri_ratio": 0.333,
+        "benchmark_id": "BM-02"
+      },
+      "rps": {
+        "version": "1.0",
+        "graph_id": "3c967ddd-4638-4599-b995-9727fe31546c",
+        "execution": {
+          "start_time": "2026-06-28T15:41:54.766431+00:00",
+          "end_time": "2026-06-28T15:41:54.767432+00:00",
+          "total_latency_ms": 1,
+          "success": true
+        },
+        "registers_final_state": {
+          "reg_out_0_python": {
+            "output": "Mock execution result based on: {'query': 'Solve the integral: compute the area under x-squared from 0 to 3'}"
+          },
+          "reg_out_1_verify": {
+            "verified": true,
+            "details": "Verified input: {'input_data': {'output': \"Mock execution result based on: {'query': 'Solve the integral: compute the area under x-squared from 0 to 3'}\"}}"
+          },
+          "reg_out_2_infer": {
+            "response": "Mock LLM reasoning response for: {'input_data': {'verified': True, 'details': 'Verified input: {\\'input_data\\': {\\'output\\': \"Mock execution result based on: {\\'query\\': \\'Solve the integral: compute the area under x-squared from 0 to 3\\'}\"}}'}}"
+          }
+        },
+        "provenance_events": [
+          {
+            "node_id": "node_0_python_fa11",
+            "opcode": "EXEC.PYTHON",
+            "start_time": "2026-06-28T15:41:54.767432+00:00",
+            "end_time": "2026-06-28T15:41:54.767432+00:00",
+            "latency_ms": 0,
+            "registers_read": {
+              "query": "Solve the integral: compute the area under x-squared from 0 to 3"
+            },
+            "registers_written": {
+              "reg_out_0_python": {
+                "output": "Mock execution result based on: {'query': 'Solve the integral: compute the area under x-squared from 0 to 3'}"
+              }
+            },
+            "confidence": 1.0,
+            "error": null
+          },
+          {
+            "node_id": "node_1_verify_7d3c",
+            "opcode": "VERI.VERIFY",
+            "start_time": "2026-06-28T15:41:54.767432+00:00",
+            "end_time": "2026-06-28T15:41:54.767432+00:00",
+            "latency_ms": 0,
+            "registers_read": {
+              "input_data": {
+                "output": "Mock execution result based on: {'query': 'Solve the integral: compute the area under x-squared from 0 to 3'}"
+              }
+            },
+            "registers_written": {
+              "reg_out_1_verify": {
+                "verified": true,
+                "details": "Verified input: {'input_data': {'output': \"Mock execution result based on: {'query': 'Solve the integral: compute the area under x-squared from 0 to 3'}\"}}"
+              }
+            },
+            "confidence": 0.95,
+            "error": null
+          },
+          {
+            "node_id": "node_2_infer_e105",
+            "opcode": "REAS.INFER",
+            "start_time": "2026-06-28T15:41:54.767432+00:00",
+            "end_time": "2026-06-28T15:41:54.767432+00:00",
+            "latency_ms": 0,
+            "registers_read": {
+              "input_data": {
+                "verified": true,
+                "details": "Verified input: {'input_data': {'output': \"Mock execution result based on: {'query': 'Solve the integral: compute the area under x-squared from 0 to 3'}\"}}"
+              }
+            },
+            "registers_written": {
+              "reg_out_2_infer": {
+                "response": "Mock LLM reasoning response for: {'input_data': {'verified': True, 'details': 'Verified input: {\\'input_data\\': {\\'output\\': \"Mock execution result based on: {\\'query\\': \\'Solve the integral: compute the area under x-squared from 0 to 3\\'}\"}}'}}"
+              }
+            },
+            "confidence": 1.0,
+            "error": null
+          }
+        ]
+      },
+      "problem_class": "analytical_reasoning"
+    },
+    {
+      "id": "BM-03",
+      "query": "Design a distributed cache system for 1 million requests per second",
+      "expected_class": "design_planning",
+      "actual_class": "design_planning",
+      "class_match": true,
+      "strategy": {
+        "objective": "Design a distributed cache system for 1 million requests per second",
+        "problem_class": "design_planning",
+        "execution_profile": {
+          "confidence_target": 0.95,
+          "parallelism_allowed": true,
+          "fail_fast": false
+        },
+        "knowledge_requirements": [
+          "empirical_data",
+          "context"
+        ],
+        "reasoning_requirements": [
+          "deduction",
+          "synthesis"
+        ],
+        "verification_requirements": "required",
+        "cost_estimate": {
+          "estimated_latency_ms": 2900,
+          "estimated_token_cost": 0.0066,
+          "estimated_node_count": 4,
+          "confidence_projection": 0.95,
+          "feasibility": "within_budget"
+        }
+      },
+      "cost_estimate": {
+        "estimated_latency_ms": 2900,
+        "estimated_token_cost": 0.0066,
+        "estimated_node_count": 4,
+        "confidence_projection": 0.95,
+        "feasibility": "within_budget"
+      },
+      "optimizer_diagnostics": [
+        "[VerificationFusion] no change",
+        "[DeadNodeElimination] no change"
+      ],
+      "node_count_after_optimization": 4,
+      "metrics": {
+        "node_count": 4,
+        "edge_count": 3,
+        "register_count": 5,
+        "graph_depth": 4,
+        "graph_width": 1,
+        "opcode_distribution": {
+          "KNOW.RETRIEVE": 1,
+          "KNOW.MEMORY": 1,
+          "VERI.VERIFY": 1,
+          "REAS.INFER": 1
+        },
+        "verification_density": 0.25,
+        "know_ratio": 0.5,
+        "exec_ratio": 0.0,
+        "reas_ratio": 0.25,
+        "veri_ratio": 0.25,
+        "benchmark_id": "BM-03"
+      },
+      "rps": {
+        "version": "1.0",
+        "graph_id": "1550da23-43a2-4143-ab27-703f7b641d27",
+        "execution": {
+          "start_time": "2026-06-28T15:41:54.768432+00:00",
+          "end_time": "2026-06-28T15:41:54.768432+00:00",
+          "total_latency_ms": 0,
+          "success": true
+        },
+        "registers_final_state": {
+          "reg_out_0_retrieve": {
+            "documents": [
+              "Mock Document 1",
+              "Mock Document 2"
+            ]
+          },
+          "reg_out_1_memory": {
+            "memory_stored": true
+          },
+          "reg_out_2_verify": {
+            "verified": true,
+            "details": "Verified input: {'input_data': {'memory_stored': True}}"
+          },
+          "reg_out_3_infer": {
+            "response": "Mock LLM reasoning response for: {'input_data': {'verified': True, 'details': \"Verified input: {'input_data': {'memory_stored': True}}\"}}"
+          }
+        },
+        "provenance_events": [
+          {
+            "node_id": "node_0_retrieve_c750",
+            "opcode": "KNOW.RETRIEVE",
+            "start_time": "2026-06-28T15:41:54.768432+00:00",
+            "end_time": "2026-06-28T15:41:54.768432+00:00",
+            "latency_ms": 0,
+            "registers_read": {
+              "query": "Design a distributed cache system for 1 million requests per second"
+            },
+            "registers_written": {
+              "reg_out_0_retrieve": {
+                "documents": [
+                  "Mock Document 1",
+                  "Mock Document 2"
+                ]
+              }
+            },
+            "confidence": 1.0,
+            "error": null
+          },
+          {
+            "node_id": "node_1_memory_e0b8",
+            "opcode": "KNOW.MEMORY",
+            "start_time": "2026-06-28T15:41:54.768432+00:00",
+            "end_time": "2026-06-28T15:41:54.768432+00:00",
+            "latency_ms": 0,
+            "registers_read": {
+              "input_data": {
+                "documents": [
+                  "Mock Document 1",
+                  "Mock Document 2"
+                ]
+              }
+            },
+            "registers_written": {
+              "reg_out_1_memory": {
+                "memory_stored": true
+              }
+            },
+            "confidence": 1.0,
+            "error": null
+          },
+          {
+            "node_id": "node_2_verify_1ea1",
+            "opcode": "VERI.VERIFY",
+            "start_time": "2026-06-28T15:41:54.768432+00:00",
+            "end_time": "2026-06-28T15:41:54.768432+00:00",
+            "latency_ms": 0,
+            "registers_read": {
+              "input_data": {
+                "memory_stored": true
+              }
+            },
+            "registers_written": {
+              "reg_out_2_verify": {
+                "verified": true,
+                "details": "Verified input: {'input_data': {'memory_stored': True}}"
+              }
+            },
+            "confidence": 0.95,
+            "error": null
+          },
+          {
+            "node_id": "node_3_infer_be9e",
+            "opcode": "REAS.INFER",
+            "start_time": "2026-06-28T15:41:54.768432+00:00",
+            "end_time": "2026-06-28T15:41:54.768432+00:00",
+            "latency_ms": 0,
+            "registers_read": {
+              "input_data": {
+                "verified": true,
+                "details": "Verified input: {'input_data': {'memory_stored': True}}"
+              }
+            },
+            "registers_written": {
+              "reg_out_3_infer": {
+                "response": "Mock LLM reasoning response for: {'input_data': {'verified': True, 'details': \"Verified input: {'input_data': {'memory_stored': True}}\"}}"
+              }
+            },
+            "confidence": 1.0,
+            "error": null
+          }
+        ]
+      },
+      "problem_class": "design_planning"
+    },
+    {
+      "id": "BM-04",
+      "query": "Critique this business plan: a subscription app for daily motivational quotes",
+      "expected_class": "critical_evaluation",
+      "actual_class": "critical_evaluation",
+      "class_match": true,
+      "strategy": {
+        "objective": "Critique this business plan: a subscription app for daily motivational quotes",
+        "problem_class": "critical_evaluation",
+        "execution_profile": {
+          "confidence_target": 0.95,
+          "parallelism_allowed": true,
+          "fail_fast": false
+        },
+        "knowledge_requirements": [
+          "empirical_data",
+          "context"
+        ],
+        "reasoning_requirements": [
+          "comparison",
+          "deduction"
+        ],
+        "verification_requirements": "optional",
+        "cost_estimate": {
+          "estimated_latency_ms": 2900,
+          "estimated_token_cost": 0.0066,
+          "estimated_node_count": 4,
+          "confidence_projection": 0.95,
+          "feasibility": "within_budget"
+        }
+      },
+      "cost_estimate": {
+        "estimated_latency_ms": 2900,
+        "estimated_token_cost": 0.0066,
+        "estimated_node_count": 4,
+        "confidence_projection": 0.95,
+        "feasibility": "within_budget"
+      },
+      "optimizer_diagnostics": [
+        "[VerificationFusion] no change",
+        "[DeadNodeElimination] no change"
+      ],
+      "node_count_after_optimization": 4,
+      "metrics": {
+        "node_count": 4,
+        "edge_count": 3,
+        "register_count": 5,
+        "graph_depth": 4,
+        "graph_width": 1,
+        "opcode_distribution": {
+          "KNOW.RETRIEVE": 1,
+          "KNOW.MEMORY": 1,
+          "REAS.INFER": 1,
+          "VERI.VERIFY": 1
+        },
+        "verification_density": 0.25,
+        "know_ratio": 0.5,
+        "exec_ratio": 0.0,
+        "reas_ratio": 0.25,
+        "veri_ratio": 0.25,
+        "benchmark_id": "BM-04"
+      },
+      "rps": {
+        "version": "1.0",
+        "graph_id": "7f7551c6-46f0-4099-9502-2018253706b5",
+        "execution": {
+          "start_time": "2026-06-28T15:41:54.769430+00:00",
+          "end_time": "2026-06-28T15:41:54.770429+00:00",
+          "total_latency_ms": 0,
+          "success": true
+        },
+        "registers_final_state": {
+          "reg_out_0_retrieve": {
+            "documents": [
+              "Mock Document 1",
+              "Mock Document 2"
+            ]
+          },
+          "reg_out_1_memory": {
+            "memory_stored": true
+          },
+          "reg_out_2_infer": {
+            "response": "Mock LLM reasoning response for: {'input_data': {'memory_stored': True}}"
+          },
+          "reg_out_3_verify": {
+            "verified": true,
+            "details": "Verified input: {'input_data': {'response': \"Mock LLM reasoning response for: {'input_data': {'memory_stored': True}}\"}}"
+          }
+        },
+        "provenance_events": [
+          {
+            "node_id": "node_0_retrieve_a0ec",
+            "opcode": "KNOW.RETRIEVE",
+            "start_time": "2026-06-28T15:41:54.769430+00:00",
+            "end_time": "2026-06-28T15:41:54.769430+00:00",
+            "latency_ms": 0,
+            "registers_read": {
+              "query": "Critique this business plan: a subscription app for daily motivational quotes"
+            },
+            "registers_written": {
+              "reg_out_0_retrieve": {
+                "documents": [
+                  "Mock Document 1",
+                  "Mock Document 2"
+                ]
+              }
+            },
+            "confidence": 1.0,
+            "error": null
+          },
+          {
+            "node_id": "node_1_memory_f23d",
+            "opcode": "KNOW.MEMORY",
+            "start_time": "2026-06-28T15:41:54.769430+00:00",
+            "end_time": "2026-06-28T15:41:54.769430+00:00",
+            "latency_ms": 0,
+            "registers_read": {
+              "input_data": {
+                "documents": [
+                  "Mock Document 1",
+                  "Mock Document 2"
+                ]
+              }
+            },
+            "registers_written": {
+              "reg_out_1_memory": {
+                "memory_stored": true
+              }
+            },
+            "confidence": 1.0,
+            "error": null
+          },
+          {
+            "node_id": "node_2_infer_62b9",
+            "opcode": "REAS.INFER",
+            "start_time": "2026-06-28T15:41:54.769430+00:00",
+            "end_time": "2026-06-28T15:41:54.769430+00:00",
+            "latency_ms": 0,
+            "registers_read": {
+              "input_data": {
+                "memory_stored": true
+              }
+            },
+            "registers_written": {
+              "reg_out_2_infer": {
+                "response": "Mock LLM reasoning response for: {'input_data': {'memory_stored': True}}"
+              }
+            },
+            "confidence": 1.0,
+            "error": null
+          },
+          {
+            "node_id": "node_3_verify_5913",
+            "opcode": "VERI.VERIFY",
+            "start_time": "2026-06-28T15:41:54.769430+00:00",
+            "end_time": "2026-06-28T15:41:54.770429+00:00",
+            "latency_ms": 0,
+            "registers_read": {
+              "input_data": {
+                "response": "Mock LLM reasoning response for: {'input_data': {'memory_stored': True}}"
+              }
+            },
+            "registers_written": {
+              "reg_out_3_verify": {
+                "verified": true,
+                "details": "Verified input: {'input_data': {'response': \"Mock LLM reasoning response for: {'input_data': {'memory_stored': True}}\"}}"
+              }
+            },
+            "confidence": 0.95,
+            "error": null
+          }
+        ]
+      },
+      "problem_class": "critical_evaluation"
+    },
+    {
+      "id": "BM-05",
+      "query": "Explain Hamlet's motivations throughout the play",
+      "expected_class": "interpretive_reasoning",
+      "actual_class": "interpretive_reasoning",
+      "class_match": true,
+      "strategy": {
+        "objective": "Explain Hamlet's motivations throughout the play",
+        "problem_class": "interpretive_reasoning",
+        "execution_profile": {
+          "confidence_target": 0.95,
+          "parallelism_allowed": true,
+          "fail_fast": false
+        },
+        "knowledge_requirements": [
+          "context"
+        ],
+        "reasoning_requirements": [
+          "deduction",
+          "summarization"
+        ],
+        "verification_requirements": "none",
+        "cost_estimate": {
+          "estimated_latency_ms": 1300,
+          "estimated_token_cost": 0.0041,
+          "estimated_node_count": 2,
+          "confidence_projection": 0.807,
+          "feasibility": "within_budget"
+        }
+      },
+      "cost_estimate": {
+        "estimated_latency_ms": 1300,
+        "estimated_token_cost": 0.0041,
+        "estimated_node_count": 2,
+        "confidence_projection": 0.807,
+        "feasibility": "within_budget"
+      },
+      "optimizer_diagnostics": [
+        "[VerificationFusion] no change",
+        "[DeadNodeElimination] no change"
+      ],
+      "node_count_after_optimization": 2,
+      "metrics": {
+        "node_count": 2,
+        "edge_count": 1,
+        "register_count": 3,
+        "graph_depth": 2,
+        "graph_width": 1,
+        "opcode_distribution": {
+          "KNOW.MEMORY": 1,
+          "REAS.SUMMARIZE": 1
+        },
+        "verification_density": 0.0,
+        "know_ratio": 0.5,
+        "exec_ratio": 0.0,
+        "reas_ratio": 0.5,
+        "veri_ratio": 0.0,
+        "benchmark_id": "BM-05"
+      },
+      "rps": {
+        "version": "1.0",
+        "graph_id": "26161143-2acf-4da4-997a-066728afa4be",
+        "execution": {
+          "start_time": "2026-06-28T15:41:54.770429+00:00",
+          "end_time": "2026-06-28T15:41:54.770429+00:00",
+          "total_latency_ms": 0,
+          "success": true
+        },
+        "registers_final_state": {
+          "reg_out_0_memory": {
+            "memory_stored": true
+          },
+          "reg_out_1_summarize": {
+            "summary": "Mock summary of: {'input_data': {'memory_stored': True}}"
+          }
+        },
+        "provenance_events": [
+          {
+            "node_id": "node_0_memory_2e26",
+            "opcode": "KNOW.MEMORY",
+            "start_time": "2026-06-28T15:41:54.770429+00:00",
+            "end_time": "2026-06-28T15:41:54.770429+00:00",
+            "latency_ms": 0,
+            "registers_read": {
+              "query": "Explain Hamlet's motivations throughout the play"
+            },
+            "registers_written": {
+              "reg_out_0_memory": {
+                "memory_stored": true
+              }
+            },
+            "confidence": 1.0,
+            "error": null
+          },
+          {
+            "node_id": "node_1_summarize_dff2",
+            "opcode": "REAS.SUMMARIZE",
+            "start_time": "2026-06-28T15:41:54.770429+00:00",
+            "end_time": "2026-06-28T15:41:54.770429+00:00",
+            "latency_ms": 0,
+            "registers_read": {
+              "input_data": {
+                "memory_stored": true
+              }
+            },
+            "registers_written": {
+              "reg_out_1_summarize": {
+                "summary": "Mock summary of: {'input_data': {'memory_stored': True}}"
+              }
+            },
+            "confidence": 1.0,
+            "error": null
+          }
+        ]
+      },
+      "problem_class": "interpretive_reasoning"
+    }
+  ],
+  "diversity": {
+    "labels": [
+      "BM-01",
+      "BM-02",
+      "BM-03",
+      "BM-04",
+      "BM-05"
+    ],
+    "distance_matrix": [
+      [
+        0.0,
+        0.8,
+        0.6,
+        0.6,
+        0.75
+      ],
+      [
+        0.8,
+        0.0,
+        0.6,
+        0.6,
+        1.0
+      ],
+      [
+        0.6,
+        0.6,
+        0.0,
+        0.0,
+        0.8
+      ],
+      [
+        0.6,
+        0.6,
+        0.0,
+        0.0,
+        0.8
+      ],
+      [
+        0.75,
+        1.0,
+        0.8,
+        0.8,
+        0.0
+      ]
+    ],
+    "average_diversity_score": 0.655,
+    "interpretation": "HIGH diversity: C\u00b3 is generating structurally distinct graphs per problem class."
+  }
+}

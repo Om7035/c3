@@ -19,11 +19,11 @@ The core hypothesis is that **dynamically synthesized reasoning programs outperf
 ```
 Question
   ↓
-Problem Analyzer (Replaces Epistemic Classifier)
+Problem Analyzer
   ↓
-Reasoning Planner
+Strategy Builder
   ↓
-Reasoning Strategy (Defines execution and validation constraints)
+Reasoning Strategy (AST)
   ↓
 Compiler
   ↓
@@ -37,7 +37,7 @@ Primitive Library
   ↓
 Verification
   ↓
-Execution Report
+Reasoning Provenance Specification (RPS) / Execution Trace
   ↓
 Answer
 ```
