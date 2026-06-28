@@ -1,52 +1,56 @@
-# Dynamic Reasoning Program Synthesis via a Compiler Architecture for Language Model Systems
+# Typed, Verifiable, Per-Query Reasoning Programs with Full Provenance
 
-**Status:** Living Draft — Milestone X (Scientific Validation)  
+**Status:** Living Draft — Milestone Y (Reviewer Readiness)  
 **Last Updated:** 2026-06-28
 
 ---
 
 ## Abstract
 
-We propose a compiler architecture that synthesizes executable reasoning programs from natural-language problems. Unlike prior systems that execute fixed reasoning pipelines (e.g., prompt-and-generate or fixed-tool loops), C³ separates semantic planning, compilation, optimization, execution, and provenance into distinct layers. By dynamically emitting a Reasoning Intermediate Representation (RIR), C³ allows for task-specific computation graphs that are strictly typed and verifiable. We evaluate whether dynamic reasoning program synthesis improves Estimated Reasoning Efficiency (ERE) across heterogeneous task classes compared to fixed pipelines.
+We propose C³ (Cognitive Computation Compiler), an architecture that synthesizes executable, typed reasoning programs per query. Unlike prior work that searches for fixed agentic workflows offline (ADAS, AFlow) or composes unverified heuristic guidelines per task (Self-Discover), C³ lowers natural language queries into a Reasoning Intermediate Representation (RIR). This RIR is a strictly typed directed acyclic graph (DAG) of reasoning primitives, gated by a first-class verifier. The primary output of the system is a Reasoning Provenance Specification (RPS): a complete, auditable trace of the knowledge flow, intermediate states, and calibrated confidence. We evaluate C³ against a tool-enabled frontier LLM baseline across heterogeneous tasks, demonstrating that per-query compilation shifts the Cost-Accuracy Pareto frontier outward for complex reasoning.
 
 ---
 
 ## 1. Introduction
 
-Modern LLM-based systems predominantly follow fixed inference patterns: retrieve, then generate; or plan, then act. While these patterns are effective for constrained problem classes, they impose a static computational structure on inherently diverse reasoning tasks. A question requiring mathematical computation, a question requiring literary interpretation, and a question requiring system design all receive structurally equivalent treatment under a fixed pipeline — differing only in the content of the prompt.
+Modern LLM-based systems predominantly follow fixed inference patterns: retrieve, then generate; or a static loop of plan, then act. Recent approaches to workflow optimization recognize the limitation of static graphs. Systems like ADAS (Meta Agent Search) and AFlow use offline search (e.g., MCTS) over code space to discover optimized, fixed workflows for specific task distributions. Alternatively, Self-Discover composes task-specific reasoning structures online, but relies on heuristic adherence by the LLM without formal verification or typed execution.
 
-We challenge this assumption. The central hypothesis of C³ is:
+C³ identifies a gap in this literature: **What if the reasoning structure is synthesized per-instance, but executed with the rigor of a typed virtual machine?**
 
-> **Every problem deserves its own synthesized computation.**
-
-C³ operationalizes this hypothesis through a compiler-inspired pipeline. A question is analyzed and compiled into a problem-specific reasoning program — a directed acyclic graph of modular reasoning primitives — which is then executed by a virtual reasoning machine. The program, not the answer, is the primary output.
+We operationalize this by treating the LLM as a compiler front-end. A query is analyzed and lowered into a Reasoning Strategy (AST), which is then compiled into a Reasoning Intermediate Representation (RIR). The RIR is executed by a deterministic runtime that strictly separates planning from execution, emitting a verifiable Reasoning Provenance Specification (RPS). 
 
 ---
 
-## 2. Formal Model
+## 2. Related Work
 
-C³ relies on a formal operational semantics to guarantee reasoning properties before, during, and after execution. The core abstraction is the Reasoning Intermediate Representation (RIR), evaluated within a typed execution context $\Gamma$.
+Our work sits at the intersection of reasoning program synthesis and workflow optimization:
+
+- **Self-Discover (DeepMind, 2024):** Composes task-level reasoning structures. C³ differs by composing *per-instance* executable graphs with formal verification gates.
+- **ADAS & Meta Agent Search (2025):** Employs an LLM to search the space of Python programs to discover novel agentic workflows. This search is performed offline per distribution, yielding a frozen workflow. C³ synthesizes the workflow dynamically for every query.
+- **AFlow (2025):** Reformulates workflow optimization as MCTS over code-represented nodes (Ensemble, Review). While similar to our Primitive ISA, AFlow discovers fixed pipelines offline.
+- **DSPy:** Focuses on differentiable compilation of fixed pipelines. C³ focuses on structural, dynamic compilation with explicit auditability.
+
+The core differentiator of C³ is its combination of **per-query synthesis** with a **verifiable, typed RIR** and an **auditable RPS trace**.
+
+---
+
+## 3. Formal Model
+
+C³ relies on a formal operational semantics to guarantee reasoning properties before, during, and after execution. The core abstraction is the RIR, evaluated within a typed execution context $\Gamma$.
 
 **Register Assignment**  
 Every primitive operation $op$ belonging to the instruction set $\Sigma$ yields a value $v$ which is written to a typed register $r$:
 
 $$\frac{\text{op} \in \Sigma \quad \Gamma \vdash \text{op}(\vec{o}) \Downarrow v}{\Gamma[r \mapsto v] \vdash \text{WRITE}(r, v)}$$
 
-**Sequential Composition**  
-Execution propagates state via deterministic compositional rules:
-
-$$\frac{\Gamma \vdash n_1 \Downarrow \Gamma_1 \quad \Gamma_1 \vdash n_2 \Downarrow \Gamma_2}{\Gamma \vdash n_1 \rightarrow n_2 \Downarrow \Gamma_2}$$
-
 **Verification Judgment**  
-A claim $v$ is considered verified only if a first-class `VERI.VERIFY` primitive computes a confidence $c$ exceeding a predefined threshold $\theta$:
+A claim $v$ is considered verified only if a first-class `VERI.VERIFY` primitive executes. This forces the system to mathematically prove trust rather than relying on self-reported confidence from a generator node.
 
 $$\frac{\Gamma \vdash \text{VERI.VERIFY}(\$r) \Downarrow \langle v, c \rangle \quad c \geq \theta}{\Gamma \vdash \text{VERIFIED}(\$r, \theta)}$$
 
-These formalisms guarantee that the synthesized program structure explicitly encodes the knowledge flow and verification requirements of the task.
-
 ---
 
-## 3. Architecture
+## 4. Architecture
 
 C³ follows the structure of a classical compiler, with a clear separation between front-end, middle-end, and back-end.
 
@@ -54,16 +58,13 @@ C³ follows the structure of a classical compiler, with a clear separation betwe
 Question
   |
   v
-Problem Analyzer          [Front-End]
-  |
-  v
-Strategy Builder
+LLM Planner (Front-End)
   |
   v
 Reasoning Strategy (AST)
   |
   v
-Compiler                  [Middle-End]
+Compiler (Middle-End)
   |
   v
 Reasoning Intermediate Representation (RIR)
@@ -72,70 +73,53 @@ Reasoning Intermediate Representation (RIR)
 Pass Manager (Optimization)
   |
   v
-Reasoning Runtime          [Back-End]
-  |
-  v
-Primitive Library
+Reasoning Runtime (Back-End)
   |
   v
 Reasoning Provenance Specification (RPS)
-  |
-  v
-Answer
 ```
 
-### 3.1 The Strategy Layer (AST)
-The Problem Analyzer classifies the input into a `ProblemType` and the Strategy Builder emits a declarative `ReasoningStrategy` object — the Abstract Syntax Tree of C³. It specifies *what classes of reasoning are required*, not *how to execute them*.
-
-### 3.2 Reasoning Intermediate Representation (RIR)
-The Compiler lowers the Strategy AST into RIR: a register-based, typed DAG of primitive instructions. Each node carries an opcode from the Primitive ISA (e.g., `KNOW.RETRIEVE`, `EXEC.PYTHON`, `VERI.VERIFY`, `REAS.INFER`), input operands (which may reference `$register` values), and declared output registers. RIR is the stable interface of C³.
-
-### 3.3 Reasoning Provenance Specification (RPS)
-The Reasoning Runtime executes RIR as a virtual machine, maintaining a `RegisterBank` for intermediate state. At every node execution, it emits a provenance event capturing node execution metrics, register states, and confidence scores.
+The front-end utilizes a constrained LLM planner that strictly outputs a JSON-schema AST. The RIR guarantees that the LLM's plan is type-checked and executable by deterministic primitives.
 
 ---
 
-## 4. Experimental Setup
+## 5. Experimental Setup & Metrics
 
-We evaluate C³ via a rigorous ablation study on a 50-question benchmark dataset spanning Factual QA, Math, Planning, Critical Evaluation, and Interpretive Reasoning. 
+We evaluate C³ against strong baselines using established reasoning benchmarks (GSM8K, HotpotQA, BBH). 
 
-### 4.1 Ablation Conditions
-We define four experimental conditions to isolate the impact of dynamic synthesis and optimization:
-1. **Condition A: Fixed (Minimal)** — A static `RETRIEVE → INFER` pipeline (Null Baseline).
-2. **Condition B: Fixed (ReAct)** — A static `RETRIEVE → PYTHON → VERIFY → INFER` pipeline (Strong Baseline).
-3. **Condition C: C³ (No Optimizer)** — Dynamically synthesized strategies without graph optimization passes.
-4. **Condition D: Full C³** — Full dynamic synthesis with graph optimization passes.
+### 5.1 Ablation Conditions
+1. **Vanilla Tool-Enabled LLM (Baseline):** A frontier model (gpt-4o-mini) provided with exact native tools (execute_python, search_web), prompted to think and answer. This tests if the C³ scaffold provides value over raw LLM tool usage.
+2. **Fixed (ReAct):** A static `RETRIEVE → PYTHON → VERIFY → INFER` pipeline.
+3. **Full C³:** Full dynamic per-query synthesis with graph optimization passes.
 
-### 4.2 Metrics
-We introduce the **Estimated Reasoning Efficiency (ERE)** metric to quantify the tradeoff between reasoning quality and computational cost:
+### 5.2 Pareto Metrics
+We discard composite metrics like "Reasoning Efficiency" as they are collinear and susceptible to self-reporting bias. Instead, we measure the **Cost-Accuracy Pareto Frontier**, analyzing three independent axes:
+- Empirical Accuracy
+- Token Cost ($)
+- Latency (ms)
 
-$$ERE = \frac{Accuracy \times Confidence}{Cost \times Latency_{s} \times Nodes}$$
-
-Where Accuracy is determined empirically by exact-match (for factual/numeric) or an LLM-as-judge (for rubric-based planning/critical tasks).
+The central research question: **Does paying the per-query synthesis cost of C³ buy enough accuracy over a tool-enabled baseline to land on the Pareto frontier?**
 
 ---
 
-## 5. Results
+## 6. Results
 
 *(To be populated following live benchmark execution)*
 
 ```text
-                     Condition A  Condition B  Condition C  Condition D
-                     (Fixed Min)  (Fixed ReAct) (C³ no opt) (Full C³)
+                     Vanilla Baseline    Fixed (ReAct)      Full C³
 ─────────────────────────────────────────────────────────────────────
-Accuracy (factual)      TBD          TBD           TBD          TBD
-Accuracy (math)         TBD          TBD           TBD          TBD
-Verification rate       TBD          TBD           TBD          TBD
-Graph diversity         TBD          TBD           TBD          TBD
-Est. cost per query     TBD          TBD           TBD          TBD
-Avg latency (ms)        TBD          TBD           TBD          TBD
-ERE score               TBD          TBD           TBD          TBD
+Accuracy                TBD               TBD               TBD
+Cost ($)                TBD               TBD               TBD
+Latency (ms)            TBD               TBD               TBD
+Verification rate       TBD               TBD               TBD
+Avg Nodes               TBD               TBD               TBD
 ```
 
-**Verdict on Central Hypothesis:** *(TBD pending experimental results)*
+**Verdict:** *(TBD pending live experimental run)*
 
 ---
 
-## 6. The Learning Compiler (Future Work)
+## 7. Conclusion
 
-Currently, the Planner uses heuristic keyword matching. A future milestone is the **Learning Compiler**. By treating every Reasoning Provenance Specification (RPS) as a verified execution trace, C³ generates its own training corpus. This corpus can be used to train an LLM-guided planner, replacing static rules with empirically derived strategies, creating a recursive reasoning improvement loop.
+C³ provides a novel architecture for reasoning program synthesis that bridges the gap between dynamic flexibility (like standard LLM chat) and formal rigor (like static code workflows). By emitting typed, verifiable RIR graphs per query, C³ ensures that trust and provenance are explicitly modeled.

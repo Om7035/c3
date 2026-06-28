@@ -1,0 +1,7 @@
+[
+  {"id": "HOTPOT-01", "query": "What is the name of the director of the film in which John Travolta plays a hitman?", "answer": "Quentin Tarantino", "answer_aliases": ["tarantino", "quentin tarantino"], "type": "exact"},
+  {"id": "HOTPOT-02", "query": "The author of 'To Kill a Mockingbird' was born in what state?", "answer": "Alabama", "answer_aliases": ["alabama"], "type": "exact"},
+  {"id": "HOTPOT-03", "query": "What is the capital of the country where the Amazon river originates?", "answer": "Lima", "answer_aliases": ["lima"], "type": "exact"},
+  {"id": "HOTPOT-04", "query": "Who is the lead singer of the band that released the album 'The Joshua Tree'?", "answer": "Bono", "answer_aliases": ["bono", "paul david hewson"], "type": "exact"},
+  {"id": "HOTPOT-05", "query": "What element is the main component of the star at the center of our solar system?", "answer": "Hydrogen", "answer_aliases": ["hydrogen", "h"], "type": "exact"}
+]

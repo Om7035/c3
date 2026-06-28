@@ -1,0 +1,7 @@
+[
+  {"id": "BBH-01", "query": "Determine if the following string has balanced parentheses: '(()())()'", "answer": "True", "answer_aliases": ["true", "yes"], "type": "exact"},
+  {"id": "BBH-02", "query": "If I put an apple in a box, take it out, and then put a banana in the box, what is in the box?", "answer": "a banana", "answer_aliases": ["banana", "only a banana", "a banana is in the box"], "type": "exact"},
+  {"id": "BBH-03", "query": "Is the word 'racecar' a palindrome?", "answer": "True", "answer_aliases": ["yes", "true"], "type": "exact"},
+  {"id": "BBH-04", "query": "Sort the following numbers in ascending order: 5, 2, 9, 1, 5", "answer": "1, 2, 5, 5, 9", "answer_aliases": ["1, 2, 5, 5, 9", "1 2 5 5 9"], "type": "exact"},
+  {"id": "BBH-05", "query": "If today is Monday, what day is 10 days from now?", "answer": "Thursday", "answer_aliases": ["thursday"], "type": "exact"}
+]

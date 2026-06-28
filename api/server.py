@@ -31,7 +31,7 @@ from runtime.executor import GraphExecutor
 from operators.library import get_operator_registry
 from core.context import ExecutionContext
 from metrics.graph_metrics import compute_graph_metrics
-from metrics.ere import compute_reasoning_efficiency, compute_mean_confidence
+
 from visualization.exporter import GraphVisualizer
 
 app = FastAPI(title="C³ Observatory API", version="1.0.0")
@@ -154,19 +154,13 @@ async def pipeline_stream(query: str):
         await asyncio.sleep(0.05)
 
         graph_metrics = compute_graph_metrics(optimized_graph)
-        mean_conf = compute_mean_confidence(rps_report)
-        re = compute_reasoning_efficiency(
-            node_count=graph_metrics["node_count"],
-            confidence=mean_conf,
-            estimated_latency_ms=cost.estimated_latency_ms,
-            estimated_token_cost=cost.estimated_token_cost,
-            verification_density=graph_metrics["verification_density"],
-        )
-        mermaid_gantt = _visualizer.to_mermaid_gantt(rps_report)
-
         yield _sse("metrics_done", {
             "graph_metrics": graph_metrics,
-            "reasoning_efficiency": re,
+            "pareto_metrics": {
+                "estimated_latency_ms": cost.estimated_latency_ms,
+                "estimated_token_cost": cost.estimated_token_cost,
+                "verification_rate": graph_metrics["verification_density"],
+            },
             "rps_summary": {
                 "graph_id": rps_report["graph_id"],
                 "provenance_event_count": len(rps_report["provenance_events"]),
@@ -178,7 +172,6 @@ async def pipeline_stream(query: str):
         yield _sse("pipeline_complete", {
             "message": "Compilation and execution complete.",
             "problem_class": strategy.problem_class,
-            "re_score": re["re_score"],
         })
 
     except Exception as e:

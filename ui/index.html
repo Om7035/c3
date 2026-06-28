@@ -856,7 +856,7 @@ async function runPipeline() {
         else if (event === 'metrics_done') {
           setStageStatus('metrics', 'done');
           const m = data.graph_metrics;
-          const re = data.reasoning_efficiency;
+          const pareto = data.pareto_metrics;
           setBody('metrics', `
             <div class="metrics-grid">
               <div class="metric-card">
@@ -873,18 +873,18 @@ async function runPipeline() {
               </div>
               <div class="metric-card">
                 <div class="metric-label">Verification</div>
-                <div class="metric-value">${(m.verification_density*100).toFixed(0)}%</div>
+                <div class="metric-value">${(pareto.verification_rate*100).toFixed(0)}%</div>
                 <div class="metric-unit">density</div>
               </div>
             </div>
             <div class="re-banner">
               <div>
-                <div class="re-label">Estimated Reasoning Efficiency (ERE)</div>
-                <div class="re-note">${re.note}</div>
+                <div class="re-label">Pareto Efficiency Metrics</div>
+                <div class="re-note">Cost & Latency Projections</div>
               </div>
               <div style="text-align:right">
-                <div class="re-score">${re.re_score.toFixed(2)}</div>
-                <div class="re-note">projected · ${re.label}</div>
+                <div class="re-score">$${pareto.estimated_token_cost.toFixed(4)}</div>
+                <div class="re-note">${pareto.estimated_latency_ms} ms</div>
               </div>
             </div>
           `);
