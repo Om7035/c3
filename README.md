@@ -38,35 +38,41 @@ The output is not just an answer, but a **Reasoning Provenance Specification (RP
 
 C³ is heavily inspired by classical compiler design (like LLVM), strictly separating planning (Front-End) from execution (Back-End).
 
-```mermaid
-graph TD
-    %% Styling
-    classDef user fill:#f9f9f9,stroke:#333,stroke-width:2px;
-    classDef llm fill:#e1f5fe,stroke:#03a9f4,stroke-width:2px;
-    classDef core fill:#e8f5e9,stroke:#4caf50,stroke-width:2px;
-    classDef vm fill:#fce4ec,stroke:#e91e63,stroke-width:2px;
-    classDef data fill:#fff3e0,stroke:#ff9800,stroke-width:2px;
-    
-    Q["Query (Natural Language)"]:::user --> P["LLM Planner (Front-End)"]:::llm
-    
-    subgraph Compiler [C³ Compiler Pipeline]
-        P -->|Synthesizes| AST["Reasoning Strategy (JSON AST)"]:::core
-        AST --> V["Type Verification & Lowering"]:::core
-        V --> RIR["Reasoning IR (Typed DAG)"]:::core
-        RIR --> OPT["Pass Manager (Optimizer)"]:::core
-    end
-    
-    OPT --> RT["Reasoning Runtime (Back-End)"]:::vm
-    
-    subgraph Execution [Runtime Virtual Machine]
-        RT --> PR["Primitives ISA"]:::vm
-        PR -->|KNOW.RETRIEVE| Search["Web/DB Search"]:::data
-        PR -->|EXEC.PYTHON| Sandbox["Isolated Sandbox"]:::data
-        PR -->|VERI.VERIFY| Logic["Formal Validator"]:::data
-    end
-    
-    RT --> RPS["Reasoning Provenance Specification (RPS)"]:::data
-    RPS --> A["Calibrated Final Answer"]:::user
+```text
+┌──────────────────────┐
+│   Natural Language   │
+│        Query         │
+└──────────┬───────────┘
+           │
+           ▼
+┌──────────────────────┐
+│     LLM Planner      │ (Front-End)
+│  (Synthesizes AST)   │
+└──────────┬───────────┘
+           │ JSON AST
+           ▼
+┌──────────────────────┐
+│ Type Verification &  │ (Compiler)
+│      Lowering        │
+└──────────┬───────────┘
+           │ Typed DAG
+           ▼
+┌──────────────────────┐
+│    Pass Manager      │ (Optimizer)
+│(Dead-node, Fusion)   │
+└──────────┬───────────┘
+           │ Optimized RIR
+           ▼
+┌──────────────────────────────────────────────────┐
+│              Reasoning Runtime VM                │
+│                                                  │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐        │
+│  │ RETRIEVE │  │  PYTHON  │  │  VERIFY  │  ...   │
+│  └────┬─────┘  └────┬─────┘  └────┬─────┘        │
+└───────┼─────────────┼─────────────┼──────────────┘
+        │             │             │
+        ▼             ▼             ▼
+  [Search/DB]     [Sandbox]     [Validator]
 ```
 
 ### Why Types Matter in Reasoning
