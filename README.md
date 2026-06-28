@@ -1,6 +1,6 @@
 <div align="center">
 
-# ⚡ C³: Cognitive Computation Compiler
+# C³: Cognitive Computation Compiler
 
 **Typed, Verifiable, Per-Query Reasoning Programs with Full Provenance.**
 
@@ -21,7 +21,7 @@
 
 ---
 
-## 🔬 The Core Hypothesis
+## The Core Hypothesis
 
 Current AI architectures (RAG, ReAct, custom LangChain/CrewAI flows) deploy **fixed reasoning workflows**. Whether relying on heuristic search (ADAS, AFlow) or fixed agent loops, the computational structure remains static for every problem.
 
@@ -34,7 +34,7 @@ The output is not just an answer, but a **Reasoning Provenance Specification (RP
 
 ---
 
-## 🧩 Architecture
+## Architecture
 
 C³ is heavily inspired by classical compiler design (like LLVM), strictly separating planning (Front-End) from execution (Back-End).
 
@@ -77,7 +77,7 @@ By enforcing strict typing via RIR, C³ unlocks capabilities impossible in stand
 
 ---
 
-## 🚀 Quickstart
+## Quickstart
 
 Experience the dynamic compilation of reasoning programs in real-time through the Web Observatory UI.
 
@@ -119,7 +119,7 @@ open ui/index.html    # On Mac
 
 ---
 
-## 📊 Benchmarks & Ablation
+## Benchmarks & Ablation
 
 To prove the scientific hypothesis, C³ evaluates against the **Cost-Accuracy Pareto Frontier**. The framework includes an ablation suite testing three modes across heterogeneous datasets (GSM8K, HotpotQA, BBH):
 
@@ -135,14 +135,14 @@ python benchmarks/ablation.py
 
 ---
 
-## 📚 Documentation
+## Documentation
 
 Dive deeper into the theory and specification of C³:
 
-- 📄 **[Research Paper: Formal Semantics](paper/paper.md)**
-- ⚙️ **[C³ Specification & RIR Design](docs/C3_SPEC.md)**
-- 🛠️ **[Primitive Instruction Set Architecture (ISA)](docs/PRIMITIVE_ISA.md)**
-- 🔍 **[Reasoning Provenance Specification (RPS)](docs/RPS_SPEC.md)**
+- **[Research Paper: Formal Semantics](paper/paper.md)**
+- **[C³ Specification & RIR Design](docs/C3_SPEC.md)**
+- **[Primitive Instruction Set Architecture (ISA)](docs/PRIMITIVE_ISA.md)**
+- **[Reasoning Provenance Specification (RPS)](docs/RPS_SPEC.md)**
 
 ---
 
