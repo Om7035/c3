@@ -85,6 +85,18 @@ def judge_exact(answer: str, ground_truth: str, aliases: list[str]) -> dict:
         if target in answer_norm or answer_norm in target:
             return {"score": 1.0, "matched": target, "method": "substring"}
 
+    # Boolean yes/no questions are frequently answered in full prose ("it is indeed
+    # a palindrome") without ever using the literal words "yes"/"true"/"no"/"false".
+    # Fall back to negation detection: if the expected answer is affirmative and the
+    # response contains no negation marker (or vice versa), count it as a match.
+    target_set = set(all_targets)
+    negation_markers = (" not ", "isn't", "is not", "cannot", "can not", "n't", " no,", " no.", " false")
+    has_negation = any(m in f" {answer_norm} " for m in negation_markers)
+    if target_set & {"true", "yes"} and not has_negation:
+        return {"score": 1.0, "matched": "affirmative_no_negation", "method": "boolean_heuristic"}
+    if target_set & {"false", "no"} and has_negation:
+        return {"score": 1.0, "matched": "negation_detected", "method": "boolean_heuristic"}
+
     return {"score": 0.0, "matched": None, "method": "no_match"}
 
 

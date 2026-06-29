@@ -56,8 +56,14 @@ class LiveInferOperator(Operator):
     async def execute(self, inputs: dict[str, Any], context: ExecutionContext) -> OperatorResult:
         context_text = _format_context(inputs)
         prompt = (
+            f"Original question: {context.objective}\n\n"
             f"{context_text}\n\n"
-            "Provide a clear, well-reasoned answer. "
+            "Based on the above, fully answer the ORIGINAL QUESTION above — not just the "
+            "intermediate facts. If answering requires one more reasoning hop past what's given "
+            "(e.g. the data identifies an intermediate entity but the question asks for something "
+            "about that entity), make that final hop yourself using your own knowledge. "
+            "State the final answer directly and concisely as the first line of your response "
+            "(do not discuss the verification process itself). "
             "At the end, on a new line, state your confidence as: 'Confidence: X.XX' "
             "(a number between 0.0 and 1.0)."
         )
@@ -97,9 +103,13 @@ class LiveSummarizeOperator(Operator):
     async def execute(self, inputs: dict[str, Any], context: ExecutionContext) -> OperatorResult:
         context_text = _format_context(inputs)
         prompt = (
-            f"Summarize the following into a concise, accurate answer.\n\n"
-            f"{context_text}\n\n"
-            "Provide only the summary. At the end, on a new line: 'Confidence: X.XX'"
+            f"Original question: {context.objective}\n\n"
+            f"Retrieved information:\n{context_text}\n\n"
+            "Answer the ORIGINAL QUESTION above as concisely and accurately as possible. "
+            "If the retrieved information only identifies an intermediate entity and the question "
+            "asks for something further about that entity (one more reasoning hop), use your own "
+            "knowledge to take that final step rather than just restating the intermediate fact. "
+            "Provide only the final answer. At the end, on a new line: 'Confidence: X.XX'"
         )
         try:
             resp = await self._client.chat.completions.create(
@@ -138,6 +148,8 @@ def _format_context(inputs: dict[str, Any]) -> str:
                 parts.append(f"Computation Result: {data['output']}")
             if "response" in data:
                 parts.append(f"Prior Reasoning: {data['response']}")
+            if "claim" in data:
+                parts.append(f"Computed Answer Under Review: {data['claim']}")
             if "verified" in data:
                 parts.append(f"Verification: {'Confirmed' if data['verified'] else 'Not confirmed'} (confidence: {data.get('confidence',0):.2f})")
             return "\n".join(parts) if parts else str(data)

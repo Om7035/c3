@@ -8,5 +8,12 @@
   {"id": "GSM-07", "query": "A store sells 3 items: a book for $12.50, a pen for $3.25, and a notebook for $6.75. What is the total cost with 8% tax?", "answer": "24.3", "answer_aliases": ["$24.30", "24.30"], "type": "numeric"},
   {"id": "GSM-08", "query": "What is the sum of the first 10 positive integers?", "answer": "55", "type": "numeric"},
   {"id": "GSM-09", "query": "If 5x + 3 = 28, what is x?", "answer": "5", "type": "numeric"},
-  {"id": "GSM-10", "query": "A circle has a radius of 7 cm. What is its circumference rounded to 2 decimal places? Use pi = 3.14159.", "answer": "43.98", "answer_aliases": ["43.98 cm", "approximately 43.98"], "type": "numeric"}
+  {"id": "GSM-10", "query": "A circle has a radius of 7 cm. What is its circumference rounded to 2 decimal places? Use pi = 3.14159.", "answer": "43.98", "answer_aliases": ["43.98 cm", "approximately 43.98"], "type": "numeric"},
+  {"id": "GSM-11", "query": "A recipe calls for 2.5 cups of flour for 12 cookies. How many cups of flour are needed for 30 cookies?", "answer": "6.25", "answer_aliases": ["6.25 cups"], "type": "numeric"},
+  {"id": "GSM-12", "query": "Maria has $200 in savings. She earns 4% simple interest per year. How much interest will she earn after 3 years?", "answer": "24", "answer_aliases": ["$24", "24 dollars"], "type": "numeric"},
+  {"id": "GSM-13", "query": "What is the least common multiple of 6 and 8?", "answer": "24", "type": "numeric"},
+  {"id": "GSM-14", "query": "A bus has 45 seats. If it is 60% full, how many seats are occupied?", "answer": "27", "type": "numeric"},
+  {"id": "GSM-15", "query": "Solve for y: 3y - 7 = 2y + 5.", "answer": "12", "type": "numeric"},
+  {"id": "GSM-16", "query": "Compute the derivative of 3x^2 + 5x - 2 at x = 2.", "answer": "17", "type": "numeric"},
+  {"id": "GSM-17", "query": "A rectangular pool is 25 meters long and 10 meters wide. What is its perimeter in meters?", "answer": "70", "type": "numeric"}
 ]

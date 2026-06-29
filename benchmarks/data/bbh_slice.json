@@ -3,5 +3,11 @@
   {"id": "BBH-02", "query": "If I put an apple in a box, take it out, and then put a banana in the box, what is in the box?", "answer": "a banana", "answer_aliases": ["banana", "only a banana", "a banana is in the box"], "type": "exact"},
   {"id": "BBH-03", "query": "Is the word 'racecar' a palindrome?", "answer": "True", "answer_aliases": ["yes", "true"], "type": "exact"},
   {"id": "BBH-04", "query": "Sort the following numbers in ascending order: 5, 2, 9, 1, 5", "answer": "1, 2, 5, 5, 9", "answer_aliases": ["1, 2, 5, 5, 9", "1 2 5 5 9"], "type": "exact"},
-  {"id": "BBH-05", "query": "If today is Monday, what day is 10 days from now?", "answer": "Thursday", "answer_aliases": ["thursday"], "type": "exact"}
+  {"id": "BBH-05", "query": "If today is Monday, what day is 10 days from now?", "answer": "Thursday", "answer_aliases": ["thursday"], "type": "exact"},
+  {"id": "BBH-06", "query": "Is the word 'level' a palindrome?", "answer": "True", "answer_aliases": ["yes", "true"], "type": "exact"},
+  {"id": "BBH-07", "query": "Determine if the following string has balanced parentheses: '(()'", "answer": "False", "answer_aliases": ["no", "false"], "type": "exact"},
+  {"id": "BBH-08", "query": "If I stack a red block on a blue block, then remove the red block and place a green block on the blue block, what color is the top block?", "answer": "green", "answer_aliases": ["green block", "the top block is green"], "type": "exact"},
+  {"id": "BBH-09", "query": "If today is Friday, what day was it 3 days ago?", "answer": "Tuesday", "answer_aliases": ["tuesday"], "type": "exact"},
+  {"id": "BBH-10", "query": "Sort the following numbers in descending order: 8, 3, 11, 4, 7", "answer": "11, 8, 7, 4, 3", "answer_aliases": ["11, 8, 7, 4, 3", "11 8 7 4 3"], "type": "exact"},
+  {"id": "BBH-11", "query": "Is the word 'compute' a palindrome?", "answer": "False", "answer_aliases": ["no", "false"], "type": "exact"}
 ]

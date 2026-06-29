@@ -58,7 +58,32 @@ You must emit a JSON object matching this schema exactly:
 Rules:
 1. If the problem requires factual lookup or math, verification_requirements should be "required".
 2. If it requires subjective interpretation, verification_requirements can be "none".
-3. Use reasoning_requirements to dictate which modules the compiler should emit (e.g., "computation" will trigger EXEC.PYTHON).
+3. Use reasoning_requirements to dictate which modules the compiler should emit:
+   - "computation" triggers EXEC.PYTHON, a sandboxed Python interpreter. Use it ONLY when the
+     answer requires executing code: arithmetic, algebra, calculus, sorting, string algorithms,
+     date math, or similar deterministic operations on KNOWN values.
+   - "summarization" or "synthesis" triggers REAS.SUMMARIZE, an LLM reading step. Use this for
+     ANY problem that requires reading, combining, or extracting facts from retrieved text —
+     including multi-hop trivia ("the capital of the country where X originates", "the singer of
+     the band that released Y"). EXEC.PYTHON cannot read prose; do NOT pick "computation" for
+     these even though they may look hard — they need text comprehension, not code execution.
+   - Do not include "computation" unless the problem statement itself contains a calculation.
+   - "context" (-> KNOW.MEMORY) is for multi-turn conversations needing memory of earlier turns.
+     This is a single-shot question with no prior turns — never include "context".
+
+Worked examples:
+- "What is 15% of 240?" -> reasoning_requirements: ["computation"]  (arithmetic, no reading needed)
+- "What is the capital of the country where the Amazon river originates?" ->
+  reasoning_requirements: ["summarization"]  (pure multi-hop fact lookup — no arithmetic anywhere
+  in the question, so "computation" must NOT appear here even though it requires multiple steps)
+- "What is the name of the director of the film in which John Travolta plays a hitman?" ->
+  reasoning_requirements: ["summarization"]  (identifying a named entity from retrieved text —
+  there is nothing to execute or calculate, so "computation" must NOT appear)
+- "Compute the definite integral of x squared from 0 to 3." -> reasoning_requirements: ["computation"]
+
+Self-check before answering: re-read your reasoning_requirements list. If it contains
+"computation", point to the exact substring in PROBLEM above that requires arithmetic or code
+execution. If you cannot point to one, remove "computation" from the list.
 """
         try:
             resp = self._client.chat.completions.create(

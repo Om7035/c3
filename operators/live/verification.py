@@ -71,7 +71,7 @@ Do not include any text outside the JSON."""
 
             return OperatorResult(
                 success=True,
-                data={"verified": verified, "confidence": confidence, "reason": reason},
+                data={"verified": verified, "confidence": confidence, "reason": reason, "claim": claim},
                 confidence=confidence,
             )
 
@@ -81,7 +81,7 @@ Do not include any text outside the JSON."""
             verified = "true" in text.lower() and "false" not in text.lower()
             return OperatorResult(
                 success=True,
-                data={"verified": verified, "confidence": 0.5, "reason": "Parsed heuristically"},
+                data={"verified": verified, "confidence": 0.5, "reason": "Parsed heuristically", "claim": claim},
                 confidence=0.5,
             )
         except Exception as e:

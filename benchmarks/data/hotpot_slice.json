@@ -3,5 +3,12 @@
   {"id": "HOTPOT-02", "query": "The author of 'To Kill a Mockingbird' was born in what state?", "answer": "Alabama", "answer_aliases": ["alabama"], "type": "exact"},
   {"id": "HOTPOT-03", "query": "What is the capital of the country where the Amazon river originates?", "answer": "Lima", "answer_aliases": ["lima"], "type": "exact"},
   {"id": "HOTPOT-04", "query": "Who is the lead singer of the band that released the album 'The Joshua Tree'?", "answer": "Bono", "answer_aliases": ["bono", "paul david hewson"], "type": "exact"},
-  {"id": "HOTPOT-05", "query": "What element is the main component of the star at the center of our solar system?", "answer": "Hydrogen", "answer_aliases": ["hydrogen", "h"], "type": "exact"}
+  {"id": "HOTPOT-05", "query": "What element is the main component of the star at the center of our solar system?", "answer": "Hydrogen", "answer_aliases": ["hydrogen", "h"], "type": "exact"},
+  {"id": "HOTPOT-06", "query": "What is the capital of the country where Mount Kilimanjaro is located?", "answer": "Dodoma", "answer_aliases": ["dodoma"], "type": "exact"},
+  {"id": "HOTPOT-07", "query": "Who directed the film in which Heath Ledger played the Joker?", "answer": "Christopher Nolan", "answer_aliases": ["christopher nolan", "nolan"], "type": "exact"},
+  {"id": "HOTPOT-08", "query": "What is the largest planet in our solar system?", "answer": "Jupiter", "answer_aliases": ["jupiter"], "type": "exact"},
+  {"id": "HOTPOT-09", "query": "What is the official language of the country where the Eiffel Tower is located?", "answer": "French", "answer_aliases": ["french"], "type": "exact"},
+  {"id": "HOTPOT-10", "query": "Who wrote the novel that the film 'Blade Runner' is based on?", "answer": "Philip K. Dick", "answer_aliases": ["philip k. dick", "philip dick", "philip k dick"], "type": "exact"},
+  {"id": "HOTPOT-11", "query": "What is the chemical symbol for gold?", "answer": "Au", "answer_aliases": ["au"], "type": "exact"},
+  {"id": "HOTPOT-12", "query": "What is the currency used in the country where the Great Wall is located?", "answer": "Yuan", "answer_aliases": ["yuan", "renminbi", "rmb", "chinese yuan"], "type": "exact"}
 ]

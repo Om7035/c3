@@ -49,6 +49,7 @@ from operators.config import is_live, get_backend
 from operators.library import get_operator_registry
 from core.context import ExecutionContext
 from analyzer.analyzer import ProblemAnalyzer
+from analyzer.gate import AdaptiveGate
 from planner.planner import ReasoningPlanner
 from planner.cost_model import estimate_cost
 from compiler.compiler import Compiler
@@ -148,10 +149,30 @@ async def run_react(question: dict, registry: dict) -> dict:
     }
 
 
-async def run_c3(question: dict, registry: dict) -> dict:
+async def run_c3(question: dict, registry: dict, force_compile: bool = False) -> dict:
     analyzer = ProblemAnalyzer()
     spec = analyzer.analyze(question["query"])
-    
+
+    gate = AdaptiveGate()
+    decision = gate.evaluate(question["query"], spec)
+    if force_compile:
+        decision = {**decision, "compile": True}
+
+    if not decision["compile"]:
+        # Easy path: skip the compiler entirely, route straight to a single LLM call.
+        baseline = VanillaToolBaseline()
+        result = await baseline.execute(question["query"])
+        score = await evaluate_answer(result["answer"], question)
+        return {
+            "score": score,
+            "latency_ms": result["latency_ms"] + 50,   # gate evaluation overhead
+            "cost": result["cost"],
+            "verification_rate": 0.0,
+            "nodes": 1,
+            "problem_class": f"{spec.task_type.value}:gated_vanilla",
+            "compiled": False,
+        }
+
     planner = ReasoningPlanner()
     strategy = planner.plan(spec)
     
@@ -183,12 +204,13 @@ async def run_c3(question: dict, registry: dict) -> dict:
     metrics = compute_graph_metrics(graph)
     
     return {
-        "score": score, 
+        "score": score,
         "latency_ms": latency_ms,
         "cost": actual_cost,
         "verification_rate": metrics["verification_density"],
         "nodes": metrics["node_count"],
-        "problem_class": strategy.problem_class
+        "problem_class": strategy.problem_class,
+        "compiled": True,
     }
 
 
@@ -209,29 +231,39 @@ def aggregate(results: list[dict]) -> dict:
 def print_table(agg: dict[str, dict]):
     keys = ["accuracy", "cost", "latency_ms", "verification_rate", "nodes"]
     labels = ["Accuracy", "Cost ($)", "Latency (ms)", "Verification Rate", "Avg Nodes"]
-    cols = ["A - Vanilla LLM", "B - Fixed (ReAct)", "C - Full C3"]
+    cols = ["A - Vanilla LLM", "B - Fixed (ReAct)", "C - Full C3", "D - C3 (no gate)"]
     col_w = 20
 
-    print("\n" + "=" * 80)
+    print("\n" + "=" * 100)
     print("  C3 PARETO ABLATION STUDY RESULTS")
-    print("=" * 80)
+    print("=" * 100)
     print(f"{'Metric':<22}" + "".join(f"{c:<{col_w}}" for c in cols))
-    print("-" * 80)
+    print("-" * 100)
     for k, lbl in zip(keys, labels):
         row = f"{lbl:<22}"
         for c in cols:
-            val = agg[c].get(k, "N/A")
+            val = agg.get(c, {}).get(k, "N/A")
             row += f"{str(val):<{col_w}}"
         print(row)
-    print("=" * 80)
+    print("=" * 100)
 
     if "C - Full C3" in agg and "A - Vanilla LLM" in agg:
         c3_acc = agg["C - Full C3"]["accuracy"]
         vanilla_acc = agg["A - Vanilla LLM"]["accuracy"]
         if c3_acc > vanilla_acc:
             print("\n  VERDICT: C3 dominates the Pareto frontier on Accuracy.")
+        elif c3_acc == vanilla_acc:
+            print("\n  VERDICT: C3 matches Vanilla on Accuracy while adding verification coverage Vanilla has none of.")
         else:
             print("\n  VERDICT: C3 does not yet dominate Vanilla on Accuracy.")
+
+    if "D - C3 (no gate)" in agg and "C - Full C3" in agg:
+        gated_acc = agg["C - Full C3"]["accuracy"]
+        nogate_acc = agg["D - C3 (no gate)"]["accuracy"]
+        gated_cost = agg["C - Full C3"]["cost"]
+        nogate_cost = agg["D - C3 (no gate)"]["cost"]
+        print(f"\n  GATE ABLATION: gate={gated_acc} acc / ${gated_cost} vs no-gate={nogate_acc} acc / ${nogate_cost}")
+        print("  (isolates the Adaptive Gate's own contribution: same compiler, same operators, gate on vs off)")
 
 
 async def main():
@@ -239,37 +271,101 @@ async def main():
     registry = get_operator_registry()
     backend = get_backend()
     print(f"Backend: {backend.upper()} | {len(suite)} questions")
-    print("Running 3 conditions...\n")
+    print("Running 4 conditions (A/B/C plus D: C3 with the gate forced off)...\n")
 
     all_results: dict[str, list[dict]] = {
         "A - Vanilla LLM": [],
         "B - Fixed (ReAct)": [],
         "C - Full C3": [],
+        "D - C3 (no gate)": [],
     }
+
+    fallback = {"score": 0.0, "latency_ms": 0, "cost": 0.0, "verification_rate": 0.0, "nodes": 0}
+
+    def _safe_msg(e: Exception) -> str:
+        return str(e).encode("ascii", errors="replace").decode("ascii")[:160]
+
+    analyzer = ProblemAnalyzer()
+    gate = AdaptiveGate()
+    gate_log: list[dict] = []
 
     for i, q in enumerate(suite):
         print(f"  [{i+1:02d}/{len(suite)}] {q['query'][:55]}...")
+
         try:
             a = await run_vanilla(q)
-            b = await run_react(q, registry)
-            c = await run_c3(q, registry)
-
-            all_results["A - Vanilla LLM"].append(a)
-            all_results["B - Fixed (ReAct)"].append(b)
-            all_results["C - Full C3"].append(c)
-
-            print(f"         A_acc:{a['score']:.2f}  B_acc:{b['score']:.2f}  C_acc:{c['score']:.2f}  [{c.get('problem_class','?')}]")
         except Exception as e:
-            print(f"         ERROR: {e}")
-            continue
+            print(f"         [A] ERROR: {_safe_msg(e)}")
+            a = dict(fallback)
+        all_results["A - Vanilla LLM"].append(a)
+
+        try:
+            b = await run_react(q, registry)
+        except Exception as e:
+            print(f"         [B] ERROR: {_safe_msg(e)}")
+            b = dict(fallback)
+        all_results["B - Fixed (ReAct)"].append(b)
+
+        try:
+            c = await run_c3(q, registry)
+        except Exception as e:
+            print(f"         [C] ERROR: {_safe_msg(e)}")
+            c = dict(fallback, compiled=False, problem_class="error")
+        all_results["C - Full C3"].append(c)
+
+        try:
+            d = await run_c3(q, registry, force_compile=True)
+        except Exception as e:
+            print(f"         [D] ERROR: {_safe_msg(e)}")
+            d = dict(fallback, compiled=True, problem_class="error")
+        all_results["D - C3 (no gate)"].append(d)
+
+        route = "compiled" if c.get("compiled") else "gated->vanilla"
+        print(f"         A_acc:{a['score']:.2f}  B_acc:{b['score']:.2f}  C_acc:{c['score']:.2f}  D_acc:{d['score']:.2f}  [{route}] [{c.get('problem_class','?')}]")
+
+        # Gate regret logging: A is always-vanilla, D is always-compiled, so comparing
+        # their scores tells us the empirically optimal routing decision for this query,
+        # independent of what the heuristic gate actually chose. This is training data
+        # for a future learned gate (see paper.md Limitations).
+        spec = analyzer.analyze(q["query"])
+        decision = gate.evaluate(q["query"], spec)
+        if a["score"] > d["score"]:
+            optimal = "vanilla"
+        elif d["score"] > a["score"]:
+            optimal = "compile"
+        else:
+            optimal = "either"  # tie: prefer whichever is cheaper, i.e. vanilla
+        chosen = "compile" if decision["compile"] else "vanilla"
+        regret = optimal not in (chosen, "either")
+        gate_log.append({
+            "id": q.get("id", q["query"][:30]),
+            "query": q["query"],
+            "task_type": spec.task_type.value,
+            "diff_score": decision["diff_score"],
+            "reason": decision["reason"],
+            "gate_chose": chosen,
+            "optimal": optimal,
+            "a_score": a["score"],
+            "d_score": d["score"],
+            "regret": regret,
+        })
 
     agg = {cond: aggregate(results) for cond, results in all_results.items()}
     print_table(agg)
+
+    n_regret = sum(1 for g in gate_log if g["regret"])
+    print(f"\n  GATE REGRET: {n_regret}/{len(gate_log)} questions where the heuristic gate's "
+          f"routing choice differed from the empirically optimal one (A vs D score comparison).")
 
     out_path = os.path.join(os.path.dirname(__file__), "ablation_results.json")
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump({"backend": backend, "conditions": agg}, f, indent=2)
     print(f"\nFull results saved to: {out_path}")
+
+    gate_log_path = os.path.join(DATA_DIR, "gate_regret_log.json")
+    with open(gate_log_path, "w", encoding="utf-8") as f:
+        json.dump(gate_log, f, indent=2)
+    print(f"Gate regret log saved to: {gate_log_path}")
 
 
 if __name__ == "__main__":
